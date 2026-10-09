@@ -1,0 +1,39 @@
+/**
+ * Cloudflare Wrangler Configuration
+ * Project: DEFINE 4.0 / Nimad AI Conversation Copilot
+ *
+ * Deployment:
+ * - Local preview:  npx wrangler dev
+ * - Production:     npx wrangler deploy
+ *
+ * Cloudflare Pages alternative:
+ * - npx wrangler pages deploy ./pr007-conversation-copilot/frontend --project-name=define-copilot
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "define-copilot",
+  "main": "./worker.js",
+  "compatibility_date": "2026-04-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+
+  // Cloudflare Workers Static Assets for serving HTML, CSS, JS, and media
+  "assets": {
+    "directory": "./pr007-conversation-copilot/frontend",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "single-page-application"
+  },
+
+  // Environment variables accessible via env in worker.js
+  "vars": {
+    "ENVIRONMENT": "production",
+    // Configure this to point to your deployed FastAPI backend (e.g., Render, Railway, Fly.io, VPS)
+    "BACKEND_API_URL": "https://api.your-backend-host.com"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}
