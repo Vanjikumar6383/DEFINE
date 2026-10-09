@@ -25,7 +25,7 @@
 
   "vars": {
     "ENVIRONMENT": "production",
-    "BACKEND_API_URL": ""
+    "BACKEND_API_URL": "https://installed-championship-entered-contrary.trycloudflare.com"
   },
 
   "observability": {

@@ -26,10 +26,8 @@
   // Environment variables
   "vars": {
     "ENVIRONMENT": "production",
-    // Leave empty to use the built-in Cloudflare Edge Engine out of the box.
-    // When you deploy your FastAPI backend (Render, Railway, or cloudflared tunnel),
-    // set this to your live public API URL (e.g. "https://api.your-domain.com").
-    "BACKEND_API_URL": ""
+    // Connected to your active cloudflared tunnel:
+    "BACKEND_API_URL": "https://installed-championship-entered-contrary.trycloudflare.com"
   },
 
   "observability": {
