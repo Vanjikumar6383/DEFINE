@@ -5,9 +5,6 @@
  * Deployment:
  * - Local preview:  npx wrangler dev
  * - Production:     npx wrangler deploy
- *
- * Cloudflare Pages alternative:
- * - npx wrangler pages deploy ./pr007-conversation-copilot/frontend --project-name=define-copilot
  */
 {
   "$schema": "node_modules/wrangler/config-schema.json",
@@ -26,11 +23,13 @@
     "not_found_handling": "single-page-application"
   },
 
-  // Environment variables accessible via env in worker.js
+  // Environment variables
   "vars": {
     "ENVIRONMENT": "production",
-    // Configure this to point to your deployed FastAPI backend (e.g., Render, Railway, Fly.io, VPS)
-    "BACKEND_API_URL": "https://api.your-backend-host.com"
+    // Leave empty to use the built-in Cloudflare Edge Engine out of the box.
+    // When you deploy your FastAPI backend (Render, Railway, or cloudflared tunnel),
+    // set this to your live public API URL (e.g. "https://api.your-domain.com").
+    "BACKEND_API_URL": ""
   },
 
   "observability": {

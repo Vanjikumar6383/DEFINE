@@ -25,7 +25,7 @@
 
   "vars": {
     "ENVIRONMENT": "production",
-    "BACKEND_API_URL": "https://api.your-backend-host.com"
+    "BACKEND_API_URL": ""
   },
 
   "observability": {
