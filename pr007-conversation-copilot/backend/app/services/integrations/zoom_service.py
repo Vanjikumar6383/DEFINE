@@ -19,7 +19,7 @@ class ZoomService:
     provider_id = "zoom"
     name = "Zoom"
     icon_type = "zoom"
-    description = "Layer Clarivue intelligence over your Zoom calls. Ingest cloud recording audio transcripts or stream live via desktop companion."
+    description = "Layer Nimad intelligence over your Zoom calls. Ingest cloud recording audio transcripts or stream live via desktop companion."
 
     capabilities = [
         "Cloud Recording Transcript Ingestion",

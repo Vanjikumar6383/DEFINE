@@ -1,5 +1,5 @@
 /* ===================================================================
-   Clarivue — Meeting Integrations & Intelligence Layer Styles
+   Nimad — Meeting Integrations & Intelligence Layer Styles
    Monochrome / High-Contrast Black & White SaaS Design System
    =================================================================== */
 
@@ -413,7 +413,7 @@
   color: #ffffff;
 }
 
-/* ── Clarivue Intelligence Layer Workspace Results ── */
+/* ── Nimad Intelligence Layer Workspace Results ── */
 .results-container {
   display: flex;
   flex-direction: column;

@@ -5,7 +5,7 @@ import json
 import logging
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query
-from fastapi.responses import RedirectResponse, PlainTextResponse
+from fastapi.responses import RedirectResponse, PlainTextResponse, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 
@@ -337,12 +337,12 @@ async def import_transcript(
         char_count=len(raw_content),
         platform_source=platform,
         status="imported",
-        message=f"Successfully imported {len(segments_to_add)} transcript segment(s) into Clarivue.",
+        message=f"Successfully imported {len(segments_to_add)} transcript segment(s) into NIMAD.",
     )
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Clarivue Full Conversation Analysis Pipeline
+# NIMAD Full Conversation Analysis Pipeline
 # ─────────────────────────────────────────────────────────────────────────────
 
 @router.post("/sessions/{session_id}/analyze", response_model=FullAnalysisResponse)
@@ -351,7 +351,7 @@ async def analyze_session_conversation(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Run full Clarivue AI Intelligence: Insights, Smart Replies, Decision Ledger, Action Items, Summary."""
+    """Run full NIMAD AI Intelligence: Insights, Smart Replies, Decision Ledger, Action Items, Summary."""
     res = await db.execute(select(Session).where(Session.id == session_id, Session.owner_id == current_user.id))
     session = res.scalar_one_or_none()
     if not session:
@@ -664,11 +664,11 @@ async def regenerate_suggestion_endpoint(
 @router.get("/sessions/{session_id}/export")
 async def export_session_summary(
     session_id: str,
-    format: str = Query("markdown", pattern="^(markdown|text)$"),
+    format: str = Query("markdown", pattern="^(markdown|text|transcript|json)$"),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Export executive meeting report in Markdown or Plain Text."""
+    """Export executive meeting report or full transcript in Markdown, Plain Text, Transcript, or JSON."""
     res = await db.execute(select(Session).where(Session.id == session_id, Session.owner_id == current_user.id))
     session = res.scalar_one_or_none()
     if not session:
@@ -683,12 +683,82 @@ async def export_session_summary(
     a_res = await db.execute(select(ActionItem).where(ActionItem.session_id == session_id).order_by(ActionItem.created_at.asc()))
     actions = a_res.scalars().all()
 
+    t_res = await db.execute(
+        select(TranscriptSegment)
+        .where(TranscriptSegment.session_id == session_id)
+        .order_by(TranscriptSegment.created_at.asc())
+    )
+    transcript_segments = t_res.scalars().all()
+
+    date_str = session.created_at.strftime('%Y-%m-%d %H:%M UTC') if session.created_at else 'N/A'
+
+    # Dedicated Transcript Text Export
+    if format == "transcript":
+        lines = [
+            f"NIMAD MEETING TRANSCRIPT: {session.title}",
+            f"Objective: {session.objective or 'N/A'}",
+            f"Date: {date_str}",
+            "═" * 60,
+            "",
+        ]
+        if transcript_segments:
+            for s in transcript_segments:
+                t_str = s.created_at.strftime('%H:%M:%S') if s.created_at else ''
+                t_prefix = f"[{t_str}] " if t_str else ""
+                speaker = s.speaker_label or "Participant"
+                lines.append(f"{t_prefix}{speaker}: {s.text}")
+        else:
+            lines.append("No transcript entries recorded for this session.")
+
+        return PlainTextResponse(
+            content="\n".join(lines),
+            headers={"Content-Disposition": f"attachment; filename=\"transcript-{session_id[:8]}.txt\""}
+        )
+
+    # JSON export
+    if format == "json":
+        data = {
+            "session_id": session.id,
+            "title": session.title,
+            "objective": session.objective,
+            "date": date_str,
+            "transcript": [
+                {
+                    "id": s.id,
+                    "speaker": s.speaker_label or "Participant",
+                    "text": s.text,
+                    "source_type": s.source_type,
+                    "timestamp": s.created_at.isoformat() if s.created_at else None,
+                }
+                for s in transcript_segments
+            ],
+            "decisions": [
+                {"id": d.id, "text": d.decision_text, "status": d.status, "category": d.category}
+                for d in decisions
+            ],
+            "action_items": [
+                {"id": a.id, "description": a.description, "owner": a.owner, "status": a.status, "due_date": a.due_date}
+                for a in actions
+            ],
+            "summary": summary.summary_text if summary else None,
+        }
+        return Response(
+            content=json.dumps(data, indent=2),
+            media_type="application/json",
+            headers={"Content-Disposition": f"attachment; filename=\"meeting-{session_id[:8]}.json\""}
+        )
+
     if format == "text":
-        date_str = session.created_at.strftime('%Y-%m-%d %H:%M UTC') if session.created_at else 'N/A'
         decisions_txt = "\n".join(f"- [{d.status}] {d.decision_text} (Evidence: {d.supporting_excerpt or 'Direct agreement'})" for d in decisions) if decisions else "No recorded decisions."
         actions_txt = "\n".join(f"- [{a.status.upper()}] {a.description} | Owner: {a.owner or 'Not specified'} | Due: {a.due_date or 'Not specified'}" for a in actions) if actions else "No open action items."
 
-        content = f"""CLARIVUE MEETING REPORT
+        transcript_txt = ""
+        if transcript_segments:
+            transcript_txt = "\n\nFULL TRANSCRIPT:\n" + "\n".join(
+                f"[{s.speaker_label or 'Participant'}]: {s.text}" for s in transcript_segments
+            )
+
+        content = f"""NIMAD MEETING REPORT
 Title: {session.title}
 Objective: {session.objective or 'N/A'}
 Date: {date_str}
@@ -700,7 +770,7 @@ DECISIONS:
 {decisions_txt}
 
 ACTION ITEMS:
-{actions_txt}
+{actions_txt}{transcript_txt}
 """
         return PlainTextResponse(
             content=content,
@@ -708,7 +778,6 @@ ACTION ITEMS:
         )
 
     # Markdown format
-    date_str = session.created_at.strftime('%Y-%m-%d %H:%M UTC') if session.created_at else 'N/A'
     md_lines = [
         f"# {session.title}",
         "",
@@ -737,6 +806,13 @@ ACTION ITEMS:
             md_lines.append(f"| **{a.status.title()}** | {a.priority or 'Medium'} | {a.description} | {a.owner or 'Not specified'} | {a.due_date or 'Not specified'} |")
     else:
         md_lines.append("_No action items recorded._")
+
+    if transcript_segments:
+        md_lines.extend(["", "## 🎙️ Transcript Record", ""])
+        for s in transcript_segments:
+            t_str = s.created_at.strftime('%H:%M:%S') if s.created_at else ''
+            t_badge = f"`{t_str}` " if t_str else ""
+            md_lines.append(f"- {t_badge}**{s.speaker_label or 'Participant'}:** {s.text}")
 
     if summary and summary.follow_up_draft:
         md_lines.extend(["", "## ✉️ Follow-Up Draft", "```text", summary.follow_up_draft, "```"])

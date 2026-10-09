@@ -62,12 +62,17 @@ export function closeModal(overlay) {
 // ── Button loading state ───────────────────────────────────────────────
 export function setLoading(btn, loading, text = '') {
   if (loading) {
-    btn._originalHTML = btn.innerHTML;
+    if (!btn._originalHTML) {
+      btn._originalHTML = btn.innerHTML;
+    }
     btn.disabled = true;
     btn.innerHTML = `<span class="spinner"></span>${text ? ' ' + text : ''}`;
   } else {
     btn.disabled = false;
-    btn.innerHTML = btn._originalHTML || btn.innerHTML;
+    if (btn._originalHTML) {
+      btn.innerHTML = btn._originalHTML;
+      delete btn._originalHTML;
+    }
   }
 }
 

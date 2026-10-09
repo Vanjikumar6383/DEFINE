@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Meeting Integrations & AI Intelligence — Clarivue</title>
-  <meta name="description" content="Clarivue AI intelligence layer for Google Meet, Zoom, and Microsoft Teams. Understand conversations, capture decisions, and track action items." />
+  <title>Meeting Integrations & AI Intelligence — Nimad</title>
+  <meta name="description" content="Nimad AI intelligence layer for Google Meet, Zoom, and Microsoft Teams. Understand conversations, capture decisions, and track action items." />
   <link rel="stylesheet" href="/static/base.css" />
   <link rel="stylesheet" href="/static/components.css" />
   <link rel="stylesheet" href="/static/integrations.css" />
@@ -13,7 +13,7 @@
   <!-- Top Navigation -->
   <nav class="navbar" role="navigation">
     <div style="display:flex;align-items:center;gap:18px;flex:1">
-      <span class="navbar-brand">◆ CLARIVUE</span>
+      <span class="navbar-brand">◆ Nimad</span>
       <a href="/dashboard" class="btn btn-ghost btn-sm" style="color:var(--clr-text-muted)">Dashboard</a>
       <a href="/integrations" class="btn btn-ghost btn-sm" style="color:#ffffff;font-weight:700">🔌 Meeting Integrations</a>
     </div>
@@ -31,9 +31,9 @@
       <div class="tag-badge">◆ AI Intelligence Layer</div>
       <h1>Meeting Integrations & Intelligence Layer</h1>
       <p>
-        Clarivue works alongside your existing meetings — <strong>Google Meet, Zoom, and Microsoft Teams</strong>. 
+        Nimad works alongside your existing meetings — <strong>Google Meet, Zoom, and Microsoft Teams</strong>. 
         We do not replace your meeting software or host audio/video conferencing. 
-        Instead, Clarivue analyzes conversations, surfaces smart responses, logs verified decisions, and tracks action items without friction.
+        Instead, Nimad analyzes conversations, surfaces smart responses, logs verified decisions, and tracks action items without friction.
       </p>
     </header>
 
@@ -86,7 +86,7 @@
         <div class="tab-pane active" id="pane-paste" role="tabpanel">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
             <p style="font-size:0.9rem;color:var(--clr-text-muted)">
-              Paste notes or raw dialogue. Clarivue extracts insights, decisions, commitments, and recommendations.
+              Paste notes or raw dialogue. Nimad extracts insights, decisions, commitments, and recommendations.
             </p>
             <div style="display:flex;gap:8px">
               <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleTranscript('tech')">
@@ -135,7 +135,7 @@ Speaker 1 [00:07]: Sarah, can you benchmark the read replica latency by Friday?"
             <div style="display:flex;justify-content:flex-end;gap:12px">
               <button type="button" class="btn btn-ghost" onclick="document.getElementById('paste-content').value=''">Clear</button>
               <button type="submit" class="btn btn-primary" id="btn-analyze-paste">
-                ✦ Analyze Conversation with Clarivue AI
+                ✦ Analyze Conversation with Nimad AI
               </button>
             </div>
           </form>
@@ -248,11 +248,11 @@ Speaker 1 [00:07]: Sarah, can you benchmark the read replica latency by Friday?"
             <!-- Honest Privacy & Permissions Notice -->
             <div class="notice-box">
               <strong>⚠️ Important Transparency Notice:</strong><br />
-              Entering a meeting URL creates a tracking reference in Clarivue. 
+              Entering a meeting URL creates a tracking reference in Nimad. 
               <strong>A meeting URL alone does NOT grant access to live meeting audio, video, or private transcripts</strong> 
               without explicit participant consent, host authorization, and active companion tooling.
               <br /><br />
-              • During live meetings, use the <strong>Clarivue Browser Companion Extension</strong> to capture captions locally in real-time.<br />
+              • During live meetings, use the <strong>Nimad Browser Companion Extension</strong> to capture captions locally in real-time.<br />
               • Alternatively, when the meeting concludes, paste or upload the exported transcript below.
             </div>
 
@@ -267,7 +267,7 @@ Speaker 1 [00:07]: Sarah, can you benchmark the read replica latency by Friday?"
       </div>
     </section>
 
-    <!-- SECTION 3: Clarivue AI Intelligence Layer Workspace -->
+    <!-- SECTION 3: Nimad AI Intelligence Layer Workspace -->
     <section id="results-section" style="display:none" aria-labelledby="results-title">
       <div class="results-header">
         <div>
@@ -564,17 +564,17 @@ Speaker 1 [00:07]: Sarah, can you benchmark the read replica latency by Friday?"
 
       const guideTexts = {
         google_meet: `
-          Clarivue connects to Google Meet via OAuth 2.0 to access Google Workspace meeting spaces and calendar artifacts.
+          Nimad connects to Google Meet via OAuth 2.0 to access Google Workspace meeting spaces and calendar artifacts.
           <br><br>
-          <strong>Extension Mode (Recommended):</strong> You can also use the <strong>Clarivue Chrome Extension</strong> directly in Google Meet to stream real-time closed captions with full participant awareness, requiring zero Cloud credentials!
+          <strong>Extension Mode (Recommended):</strong> You can also use the <strong>Nimad Chrome Extension</strong> directly in Google Meet to stream real-time closed captions with full participant awareness, requiring zero Cloud credentials!
         `,
         zoom: `
-          Clarivue connects to Zoom via the Zoom App Marketplace using a Server-to-Server or OAuth App.
+          Nimad connects to Zoom via the Zoom App Marketplace using a Server-to-Server or OAuth App.
           <br><br>
-          <strong>Required Scopes:</strong> <code>meeting:read</code>, <code>recording:read</code>. Clarivue never accesses private meetings without host authorization.
+          <strong>Required Scopes:</strong> <code>meeting:read</code>, <code>recording:read</code>. Nimad never accesses private meetings without host authorization.
         `,
         microsoft_teams: `
-          Clarivue connects to Microsoft Teams using Microsoft Graph API with Azure Entra ID.
+          Nimad connects to Microsoft Teams using Microsoft Graph API with Azure Entra ID.
           <br><br>
           <strong>Required Scopes:</strong> <code>OnlineMeetings.Read</code>, <code>OnlineMeetingTranscript.Read.All</code>.
         `
@@ -650,7 +650,7 @@ Speaker 1 [00:07]: Sarah, can you benchmark the read replica latency by Friday?"
     // ── Sample Transcripts ────────────────────────────────────────────────
     window.loadSampleTranscript = function(type) {
       if (type === 'tech') {
-        document.getElementById('paste-title').value = 'Clarivue API & Database Architecture Review';
+        document.getElementById('paste-title').value = 'Nimad API & Database Architecture Review';
         document.getElementById('paste-objective').value = 'tech_review';
         document.getElementById('paste-content').value = 
 `Alex (Engineering Lead) [00:01]: Let's finalize the backend architecture for the meeting platform intelligence layer.
@@ -665,9 +665,9 @@ Alex [00:25]: Perfect. Let's make sure all AI insights, decisions, and action it
         document.getElementById('paste-title').value = 'Enterprise SaaS Solution Demo & Pricing';
         document.getElementById('paste-objective').value = 'sales_demo';
         document.getElementById('paste-content').value = 
-`Marcus (Account Executive) [00:01]: Thanks for joining today, Elena. We're looking at Clarivue's conversation copilot.
+`Marcus (Account Executive) [00:01]: Thanks for joining today, Elena. We're looking at Nimad's conversation copilot.
 Elena (VP Product) [00:04]: Thanks Marcus. We currently use Google Meet and Teams. We don't want another video meeting tool.
-Marcus [00:08]: That's our exact value proposition. Clarivue integrates alongside Meet and Teams to extract insights, decisions, and action items.
+Marcus [00:08]: That's our exact value proposition. Nimad integrates alongside Meet and Teams to extract insights, decisions, and action items.
 Elena [00:13]: We decided to pilot with our 50-person engineering team starting next month.
 Marcus [00:18]: That's great! We agreed on the Enterprise Tier with SOC-2 compliant data retention.
 Elena [00:22]: Send me the Master Services Agreement and privacy packet by Wednesday.
@@ -703,7 +703,7 @@ Marcus [00:26]: I will send the MSA and privacy documentation to your legal team
 
         toast(`Imported ${importRes.segments_count} dialogue segments. Running analysis...`, 'info');
 
-        // Step 2: Run Clarivue Full Analysis
+        // Step 2: Run Nimad Full Analysis
         const analysisRes = await api.analysis.run(importRes.session_id);
         renderAnalysisResults(analysisRes);
         toast('Analysis complete! Intelligence Layer Workspace updated.', 'success');
@@ -1144,7 +1144,7 @@ Marcus [00:26]: I will send the MSA and privacy documentation to your legal team
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentSessionData, null, 2));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `clarivue_analysis_${currentSessionData.session_id || 'session'}.json`);
+      downloadAnchor.setAttribute("download", `Nimad_analysis_${currentSessionData.session_id || 'session'}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();

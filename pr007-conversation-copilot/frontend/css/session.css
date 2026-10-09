@@ -109,10 +109,18 @@
   justify-content: center;
   box-shadow: 0 4px 20px rgba(0,0,0,.8);
   transition: border-color var(--t-fast), box-shadow var(--t-fast);
+  cursor: pointer;
+}
+.participant-tile:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+}
+.participant-tile.active-speaker-tile {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.45) !important;
 }
 .participant-tile.is-speaking {
-  border-color: #ffffff;
-  box-shadow: 0 0 16px rgba(255,255,255,.3);
+  border-color: #ffffff !important;
+  box-shadow: 0 0 20px rgba(255,255,255,.5) !important;
 }
 
 .participant-video {
