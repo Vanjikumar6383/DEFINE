@@ -580,7 +580,7 @@ def _fallback_heuristic_answer(question: str, objective: str | None, speaker_lab
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Nimad Full Conversation Analysis (AI Intelligence Layer)
+# Clarivue Full Conversation Analysis (AI Intelligence Layer)
 # ─────────────────────────────────────────────────────────────────────────────
 
 async def analyze_conversation_full(
@@ -588,14 +588,14 @@ async def analyze_conversation_full(
     objective: Optional[str] = None,
     session_mode: str = "one_to_one",
 ) -> dict:
-    """Run full Nimad intelligence: insights, response suggestions, decision ledger, action items, summary."""
+    """Run full Clarivue intelligence: insights, response suggestions, decision ledger, action items, summary."""
     endpoint, api_key = _get_endpoint_and_key()
     if not api_key:
         return _fallback_heuristic_full_analysis(transcript_text, objective, session_mode)
 
     model = settings.AI_MODEL
     system = """\
-You are Nimad AI, an objective-aware executive conversation intelligence copilot.
+You are Clarivue AI, an objective-aware executive conversation intelligence copilot.
 Analyze this meeting transcript and return ONLY valid JSON matching this exact structure:
 {
   "insights": [
@@ -848,7 +848,7 @@ def _fallback_heuristic_full_analysis(transcript_text: str, objective: Optional[
         f"Hi team,\n\nThank you for today's productive discussion regarding {objective or 'our project agenda'}.\n\n"
         + ("Decisions Made:\n" + "\n".join(f"- {d['decision_text']} (Status: {d['status']})" for d in decisions) + "\n\n" if decisions else "")
         + ("Action Items & Deliverables:\n" + "\n".join(f"- {a['description']} (Owner: {a['owner']}, Due: {a['due_date']})" for a in actions) + "\n\n" if actions else "")
-        + "Best regards,\nNimad AI Conversation Copilot"
+        + "Best regards,\nClarivue AI Conversation Copilot"
     )
 
     return {

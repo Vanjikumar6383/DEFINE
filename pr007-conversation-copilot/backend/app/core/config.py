@@ -24,10 +24,6 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str = ""
     AI_MODEL: str = "llama-3.3-70b-versatile"
 
-    # ElevenLabs TTS
-    ELEVENLABS_API_KEY: str = ""
-    ELEVENLABS_VOICE_ID: str = "JBFqnCBsd6RMkjVDRZzb"  # George (default)
-
     # Session
     SESSION_RETENTION_DAYS: int = 30
     STORE_RAW_AUDIO: bool = False

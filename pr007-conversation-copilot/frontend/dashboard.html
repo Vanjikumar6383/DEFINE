@@ -3,27 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard &amp; Google Calendar — Nimad AI Conversation Copilot</title>
-  <meta name="description" content="Manage your Google Calendar meetings, track attended and upcoming sessions, and review instant AI transcripts, questions, and answers." />
+  <title>Dashboard — AI Conversation Copilot</title>
+  <meta name="description" content="Manage your conversation sessions and start new ones with the AI Conversation Copilot." />
   <link rel="stylesheet" href="/static/base.css" />
   <link rel="stylesheet" href="/static/components.css" />
-  <link rel="stylesheet" href="/static/calendar.css" />
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar" role="navigation">
     <div style="display:flex;align-items:center;gap:18px;flex:1">
-      <a href="/dashboard" style="display:flex;align-items:center;gap:10px;text-decoration:none">
-        <img src="/assets/nimad-symbol-white.png" alt="Nimad" style="height:26px;width:auto;">
-        <span class="navbar-brand" style="font-weight:900;letter-spacing:-0.02em;color:#ffffff;font-size:1.15rem">NIMAD</span>
-      </a>
+      <span class="navbar-brand">◆ CLARIVUE</span>
       <a href="/dashboard" class="btn btn-ghost btn-sm" style="color:#ffffff;font-weight:700">Dashboard</a>
-      <a href="/integrations" class="btn btn-ghost btn-sm" style="color:var(--clr-text-muted);display:inline-flex;align-items:center;gap:6px">
-        <span class="neon-pad neon-pad-xs neon-pad-cyan">
-          <svg viewBox="0 0 24 24"><path d="M12 2v4m0 12v4M2 12h4m12 0h4m-3.5-6.5l-2.8 2.8m-7.4 7.4l-2.8 2.8m0-13l2.8 2.8m7.4 7.4l2.8 2.8"/></svg>
-        </span>
-        Meeting Integrations
-      </a>
+      <a href="/integrations" class="btn btn-ghost btn-sm" style="color:var(--clr-text-muted)">🔌 Meeting Integrations</a>
     </div>
     <div style="display:flex;align-items:center;gap:12px">
       <span id="user-display" style="font-size:.85rem;color:var(--clr-text-muted)"></span>
@@ -33,199 +24,52 @@
 
   <!-- Hero -->
   <section class="hero">
-    <div class="container" style="position:relative">
-      <!-- Hero Text Logo Video Backdrop (Positioned directly behind hero texts, looping every 10s) -->
-      <div class="hero-text-video-backdrop" aria-hidden="true">
-        <video class="hero-logo-video" id="dashboard-hero-logo-video" autoplay muted loop playsinline preload="auto">
-          <source src="/assets/gemeni_imported_video_96cdd6a6.mp4" type="video/mp4">
-          <source src="/assets/gemini_generated_video_96cdd6a6.mp4" type="video/mp4">
-          <source src="/assets/background.mp4" type="video/mp4">
-        </video>
-        <div class="hero-video-glow"></div>
-        <div class="hero-video-radial-mask"></div>
-      </div>
+    <div class="container">
       <div class="hero-badge">
-        <span class="neon-pad neon-pad-xs neon-pad-silver">
-          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-        </span>
-        <span>AI-POWERED IN-APP &amp; EXTERNAL MEETING COPILOT</span>
+        <span>◆</span> AI-POWERED COPILOT
       </div>
       <h1 class="hero-title">
         Stay Focused.<br />
-        <span class="hero-white-black-base">Never Miss a Moment.</span>
+        <span class="gradient-text">Never Miss a Moment.</span>
       </h1>
       <p class="hero-subtitle">
         Your objective-aware AI assistant surfaces insights, reminders, and next steps — while you stay present in the conversation.
       </p>
-      <div style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;position:relative;z-index:3">
-        <button class="btn btn-primary" id="hero-schedule-btn" onclick="openScheduleMeetingModal()" style="font-size:0.95rem;padding:12px 28px;display:inline-flex;align-items:center;gap:8px">
-          <span class="neon-pad neon-pad-xs neon-pad-white">
-            <svg viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-          </span>
-          Schedule Meeting in Google Calendar
-        </button>
-        <button class="btn btn-secondary" onclick="openNewSessionModal()" style="font-size:0.95rem;padding:12px 24px;display:inline-flex;align-items:center;gap:8px">
-          <span class="neon-pad neon-pad-xs neon-pad-cyan">
-            <svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          </span>
-          Quick Live Session
-        </button>
-      </div>
-
+      <button class="btn btn-primary" id="hero-new-btn" onclick="openNewSessionModal()" style="font-size:1rem;padding:14px 32px">
+        ✦ Start New Session
+      </button>
       <div class="stats-bar" id="stats-bar" style="display:none">
         <div class="stat-item">
           <div class="stat-value" id="stat-total">0</div>
-          <div class="stat-label">Total Meetings</div>
+          <div class="stat-label">Sessions</div>
         </div>
         <div class="stat-item">
-          <div class="stat-value" id="stat-upcoming">0</div>
-          <div class="stat-label">Upcoming</div>
+          <div class="stat-value" id="stat-active">0</div>
+          <div class="stat-label">Active</div>
         </div>
         <div class="stat-item">
-          <div class="stat-value" id="stat-attended">0</div>
-          <div class="stat-label">Attended</div>
+          <div class="stat-value" id="stat-ended">0</div>
+          <div class="stat-label">Completed</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Google Calendar Meeting Workspace -->
-  <main class="container" style="padding-bottom:80px">
-
-    <!-- Upcoming Meeting Notification Banner -->
-    <div id="upcoming-notification-banner" class="upcoming-alert-banner" style="display:none">
-      <div class="upcoming-alert-content">
-        <div class="neon-pad neon-pad-md neon-pad-emerald">
-          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        </div>
-        <div class="upcoming-alert-meta">
-          <div class="alert-tag">
-            <span>UPCOMING MEETING NOTIFICATION</span>
-            <span id="alert-countdown-pill" style="background:#ffffff;color:#000000;padding:2px 8px;border-radius:99px;font-size:0.68rem;font-weight:800">STARTS IN 25 MINS</span>
-          </div>
-          <div class="alert-title" id="alert-meeting-title">Enterprise Security &amp; Compliance Sign-off</div>
-          <div class="alert-time" id="alert-meeting-time">Today at 3:30 PM • Google Meet (meet.google.com/sec-signoff-2026)</div>
-        </div>
-      </div>
-      <div class="upcoming-alert-actions">
-        <button class="btn btn-sm btn-ghost" id="btn-request-notify-perm" onclick="requestNotificationPermission()">
-          Enable Desktop Alerts
-        </button>
-        <button class="btn btn-sm btn-secondary" id="btn-view-prep-qa" onclick="viewUpcomingMeetingPrep()">
-          View Agenda &amp; Q&amp;A
-        </button>
-        <button class="btn btn-sm btn-primary" id="btn-join-upcoming" onclick="joinUpcomingMeetingNow()" style="background:#ffffff;color:#000000;font-weight:800">
-          Join Meeting Room →
-        </button>
+  <!-- Sessions grid -->
+  <main class="container" style="padding-bottom:60px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+      <h2 style="font-size:1.25rem">Your Meetings & Sessions</h2>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <a href="/integrations" class="btn btn-secondary btn-sm">🔌 Meeting Integrations</a>
+        <button class="btn btn-secondary btn-sm" onclick="joinMeetingPrompt()">🔗 Join with Room Code</button>
+        <button class="btn btn-primary btn-sm" onclick="openNewSessionModal()">+ Create Meeting</button>
       </div>
     </div>
-
-    <!-- Google Calendar Workspace Card -->
-    <div class="calendar-workspace-card">
-      <!-- Header & Sync Status Bar -->
-      <div class="gcal-header-bar">
-        <div class="gcal-brand-group">
-          <div class="neon-pad neon-pad-lg neon-pad-silver">
-            <svg viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-          </div>
-          <div class="gcal-title-info">
-            <h2>
-              Google Calendar
-              <span class="gcal-sync-pill">
-                <span class="pulse-dot"></span>
-                <span id="gcal-sync-status-label">Synced with Google Calendar</span>
-              </span>
-            </h2>
-            <p>Click any shaded date to inspect meeting details, live transcripts, and question-answer ledgers.</p>
-          </div>
-        </div>
-
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <button class="btn btn-secondary btn-sm" onclick="syncGoogleCalendar(this)">
-            Sync Calendar
-          </button>
-          <a href="/integrations" class="btn btn-secondary btn-sm">
-            Integrations
-          </a>
-          <button class="btn btn-secondary btn-sm" onclick="joinMeetingPrompt()">
-            Join by Room Code
-          </button>
-          <button class="btn btn-primary btn-sm" onclick="openScheduleMeetingModal()">
-            + Schedule Meeting
-          </button>
-        </div>
+    <div id="sessions-grid" class="sessions-grid">
+      <div class="empty-state" id="loading-state">
+        <div class="spinner" style="width:36px;height:36px"></div>
+        <p>Loading meetings…</p>
       </div>
-
-      <!-- Compact 2-Column Calendar Workspace: Left = Mini Calendar, Right = Selected Date Details -->
-      <div class="calendar-workspace-layout">
-        
-        <!-- Column 1: Simple Small Calendar Widget -->
-        <div class="mini-calendar-card">
-          <!-- Month Navigation -->
-          <div class="mini-cal-header">
-            <div class="mini-cal-month-title" id="cal-month-display">October 2026</div>
-            <div class="mini-cal-nav-buttons">
-              <button class="mini-cal-nav-btn" onclick="navigateCalendarMonth(-1)" title="Previous Month">‹</button>
-              <button class="mini-cal-today-btn" onclick="jumpCalendarToToday()">Today</button>
-              <button class="mini-cal-nav-btn" onclick="navigateCalendarMonth(1)" title="Next Month">›</button>
-            </div>
-          </div>
-
-          <!-- Weekday Labels -->
-          <div class="mini-cal-weekdays">
-            <div class="mini-cal-weekday">M</div>
-            <div class="mini-cal-weekday">T</div>
-            <div class="mini-cal-weekday">W</div>
-            <div class="mini-cal-weekday">T</div>
-            <div class="mini-cal-weekday">F</div>
-            <div class="mini-cal-weekday">S</div>
-            <div class="mini-cal-weekday">S</div>
-          </div>
-
-          <!-- Small Calendar Days Grid (Dates shaded based on meeting occurrence) -->
-          <div class="mini-cal-days-grid" id="mini-cal-days-grid">
-            <!-- Populated via JavaScript -->
-          </div>
-
-          <!-- Shading Legend -->
-          <div class="mini-cal-legend">
-            <div class="legend-item">
-              <div class="legend-swatch">
-                <div class="swatch-box swatch-attended"></div>
-                <span>Attended Meeting (Shaded Silver)</span>
-              </div>
-              <span id="count-attended" class="badge" style="background:rgba(255,255,255,0.1);color:#fff">0</span>
-            </div>
-            <div class="legend-item">
-              <div class="legend-swatch">
-                <div class="swatch-box swatch-upcoming"></div>
-                <span style="color:#6ee7b7">Future Meeting (Shaded Emerald Glow)</span>
-              </div>
-              <span id="count-upcoming" class="badge" style="background:rgba(16,185,129,0.2);color:#34d399">0</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Column 2: Selected Day Meeting Intelligence & AI Ledger Panel -->
-        <div class="calendar-day-summary-panel" id="calendar-day-summary-panel">
-          <div class="day-panel-header">
-            <div class="day-panel-date-info">
-              <h3 id="panel-selected-date-title">Today's Meetings</h3>
-              <p id="panel-selected-date-subtitle">Select any shaded date on the calendar to explore transcripts &amp; Q&amp;A.</p>
-            </div>
-            <button class="btn btn-secondary btn-sm" id="btn-quick-schedule-date" onclick="scheduleForSelectedDate()">
-              + Schedule on this Day
-            </button>
-          </div>
-
-          <!-- Dynamic List of Meeting Cards for Selected Date -->
-          <div class="day-panel-meetings-list" id="panel-meetings-list">
-            <!-- Populated via JavaScript -->
-          </div>
-        </div>
-
-      </div>
-
     </div>
   </main>
 
@@ -248,1093 +92,280 @@
       document.getElementById('user-display').textContent = user.display_name;
     }).catch(() => window.logout());
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    // Calendar State & Data Model
-    // ─────────────────────────────────────────────────────────────────────────────
-    const now = new Date();
-    let currentCalYear = now.getFullYear();
-    let currentCalMonth = now.getMonth(); // 0-indexed
-    let selectedDateIso = formatIsoDate(new Date());
-    let activeUpcomingMeeting = null;
-    let meetingsStore = [];
-
-    // Realistic baseline meetings enriched with transcripts and Q&As
-    function getBaselineMeetings() {
-      const todayStr = formatIsoDate(new Date());
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = formatIsoDate(yesterday);
-      const twoDaysAgo = new Date();
-      twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-      const twoDaysAgoStr = formatIsoDate(twoDaysAgo);
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const tomorrowStr = formatIsoDate(tomorrow);
-      const threeDaysLater = new Date();
-      threeDaysLater.setDate(threeDaysLater.getDate() + 3);
-      const threeDaysLaterStr = formatIsoDate(threeDaysLater);
-
-      return [
-        {
-          id: 'cal-attended-1',
-          title: 'Acme Corp Technical Architecture & Procurement Review',
-          date: todayStr,
-          time: '10:30 AM',
-          duration: '45 mins',
-          status: 'attended',
-          platform: 'Google Meet',
-          meeting_url: 'https://meet.google.com/acme-arch-rev',
-          attendees: 'Sarah Chen (VP Engineering), David Miller (Procurement), Alex Mercer (Lead Engineer)',
-          objective: 'Review high-availability failover architecture and confirm SOC2 SIEM export capability.',
-          desired_outcome: 'Procurement sign-off on 99.9% uptime SLA and agreement on Splunk connector pilot.',
-          transcripts: [
-            { time: '10:42:15 AM', speaker: 'Sarah Chen (VP Engineering)', text: 'What is your enterprise uptime guarantee, and how do you handle disaster recovery failovers?' },
-            { time: '10:42:25 AM', speaker: 'Alex Mercer (Lead)', text: 'We provide a 99.9% uptime SLA with active-passive multi-region failovers under 30 seconds across GCP us-central1 and us-east4.' },
-            { time: '10:42:38 AM', speaker: 'David Miller (Procurement)', text: 'Can you confirm if SOC2 Type II audit logs can be exported directly to our SIEM?' },
-            { time: '10:42:48 AM', speaker: 'Alex Mercer (Lead)', text: 'Yes, complete SOC2 Type II audit logs stream automatically via webhook and our pre-built Splunk and Datadog connectors.' },
-            { time: '10:43:10 AM', speaker: 'Sarah Chen (VP Engineering)', text: 'What is the implementation timeline for SSO and Okta integration?' },
-            { time: '10:43:20 AM', speaker: 'Alex Mercer (Lead)', text: 'Our pre-configured SAML 2.0 and OIDC connectors allow deployment within 48 hours without engineering overhead.' }
-          ],
-          qa_list: [
-            {
-              speaker: 'Sarah Chen (VP Engineering)',
-              question: 'What is your enterprise uptime guarantee, and how do you handle disaster recovery failovers?',
-              answer: 'We provide a 99.9% uptime SLA with active-passive multi-region failovers under 30 seconds across GCP us-central1 and us-east4.',
-              talking_points: [
-                'Mention 99.9% financially-backed SLA',
-                'RTO < 30s across GCP us-central1 and us-east4',
-                'Automated Splunk & Datadog connector available'
-              ]
-            },
-            {
-              speaker: 'David Miller (Procurement)',
-              question: 'Can you confirm if SOC2 Type II audit logs can be exported directly to our SIEM?',
-              answer: 'Complete SOC2 Type II audit logs stream automatically via webhook, Splunk, and Datadog SIEM connectors.',
-              talking_points: [
-                'Zero data loss guarantee on audit streaming',
-                'SOC2 Type II compliance certified by top auditing firm',
-                'Real-time automated webhook push'
-              ]
-            },
-            {
-              speaker: 'Sarah Chen (VP Engineering)',
-              question: 'What is the implementation timeline for SSO and Okta integration?',
-              answer: 'Pre-configured SAML 2.0 and OIDC connectors enable turnkey enterprise SSO deployment within 48 hours.',
-              talking_points: [
-                'Supports Okta, Azure AD / Microsoft Entra, and Google Workspace',
-                'Automated SCIM user provisioning available'
-              ]
-            }
-          ],
-          decisions: [
-            { text: 'Architecture approved for 30-day enterprise pilot on Google Cloud.', status: 'CONFIRMED' },
-            { text: 'SOC2 Type II compliance audit packet forwarded to David Miller.', status: 'CONFIRMED' }
-          ],
-          actions: [
-            { task: 'Send Splunk webhook documentation to Sarah Chen', owner: 'Alex Mercer', due: 'Tomorrow' },
-            { task: 'Provide MSA and DPA agreement draft to Procurement', owner: 'Legal Team', due: 'Friday' }
-          ]
-        },
-        {
-          id: 'cal-attended-2',
-          title: 'Sprint 42 Architecture & Audio Diarization Review',
-          date: twoDaysAgoStr,
-          time: '02:00 PM',
-          duration: '40 mins',
-          status: 'attended',
-          platform: 'Google Meet',
-          meeting_url: 'https://meet.google.com/spr-42-arch',
-          attendees: 'Engineering Team, Product Manager',
-          objective: 'Finalize real-time streaming latency SLA and database indexing strategy.',
-          desired_outcome: 'Latency targets validated under 100ms.',
-          transcripts: [
-            { time: '02:14:02 PM', speaker: 'Lead Architect', text: 'How does speech-to-text handle concurrent background audio in loud conference rooms?' },
-            { time: '02:14:18 PM', speaker: 'Nimad Specialist', text: 'Dual-channel WebRTC audio processing with noise-suppression and speaker diarization isolates foreground voices with 96% accuracy.' }
-          ],
-          qa_list: [
-            {
-              speaker: 'Lead Architect',
-              question: 'How does speech-to-text handle concurrent background audio?',
-              answer: 'Dual-channel WebRTC audio processing with noise-suppression and speaker diarization ensures clean capture.',
-              talking_points: [
-                'Browser extension intercepts tab audio directly before acoustic feedback',
-                'Speaker separation operates in real time with low latency'
-              ]
-            }
-          ],
-          decisions: [
-            { text: 'Target sub-100ms response generation for Copilot suggestions.', status: 'CONFIRMED' }
-          ],
-          actions: [
-            { task: 'Benchmark WebRTC audio pipeline in staging', owner: 'Infra Team', due: 'End of week' }
-          ]
-        },
-        {
-          id: 'cal-upcoming-1',
-          title: 'Enterprise Security & Compliance Sign-off',
-          date: todayStr,
-          time: '03:30 PM',
-          duration: '30 mins',
-          status: 'upcoming',
-          platform: 'Google Meet',
-          meeting_url: 'https://meet.google.com/sec-signoff-2026',
-          attendees: 'Chief Information Security Officer (CISO), Compliance Director',
-          objective: 'Review end-to-end encryption in transit and rest; obtain sign-off for enterprise deployment.',
-          desired_outcome: 'Approved security checklist and signed authorization.',
-          transcripts: [],
-          qa_list: [
-            {
-              speaker: 'Prepared Copilot Agenda',
-              question: 'Where are customer transcription encryption keys stored and managed?',
-              answer: 'Customer-Managed Encryption Keys (CMEK) via Google Cloud KMS with zero vendor persistence.',
-              talking_points: [
-                'Data encrypted with AES-256 in transit and rest',
-                'Ephemeral processing mode available for sensitive calls'
-              ]
-            }
-          ],
-          decisions: [],
-          actions: [
-            { task: 'Review CMEK key rotation policy with CISO', owner: 'Security Lead', due: 'During call' }
-          ]
-        },
-        {
-          id: 'cal-upcoming-2',
-          title: 'Global Product Strategy & Executive Alignment',
-          date: tomorrowStr,
-          time: '11:00 AM',
-          duration: '60 mins',
-          status: 'upcoming',
-          platform: 'Google Meet',
-          meeting_url: 'https://meet.google.com/prod-strat-sync',
-          attendees: 'Executive VP, Product Directors, Regional Leads',
-          objective: 'Align on H2 AI Copilot rollout across North America and APAC enterprise clients.',
-          desired_outcome: 'Executive roadmap sign-off and cross-team commitment.',
-          transcripts: [],
-          qa_list: [
-            {
-              speaker: 'Strategy Lead',
-              question: 'What is the projected ROI for enterprise sales teams using live Copilot answers?',
-              answer: 'Pilots demonstrate a 34% reduction in follow-up cycles and 22% higher close rates on technical reviews.',
-              talking_points: [
-                'Instant objection handling prevents lost deals',
-                'Automated CRM sync eliminates manual note taking'
-              ]
-            }
-          ],
-          decisions: [],
-          actions: []
-        },
-        {
-          id: 'cal-upcoming-3',
-          title: 'Customer Success & Pilot Onboarding Sync',
-          date: threeDaysLaterStr,
-          time: '04:00 PM',
-          duration: '45 mins',
-          status: 'upcoming',
-          platform: 'Google Meet',
-          meeting_url: 'https://meet.google.com/cs-pilot-onboard',
-          attendees: 'Head of Customer Success, Pilot Customers',
-          objective: 'Review pilot milestones, extension installation, and collect feedback.',
-          desired_outcome: '100% active user onboarding across all pilot seats.',
-          transcripts: [],
-          qa_list: [],
-          decisions: [],
-          actions: []
-        }
-      ];
-    }
-
-    function formatIsoDate(d) {
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────────
-    // Initializer: Load Real Sessions + Merge with Google Calendar
-    // ─────────────────────────────────────────────────────────────────────────────
-    async function loadCalendarMeetings() {
-      const baseline = getBaselineMeetings();
+    // Load sessions
+    async function loadSessions() {
       try {
-        const backendSessions = await api.sessions.list();
-        const realMapped = backendSessions.map(s => {
-          const sDate = s.created_at ? formatIsoDate(new Date(s.created_at)) : formatIsoDate(new Date());
-          const sTime = s.created_at ? new Date(s.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '10:00 AM';
-          const isAttended = (s.status === 'ended');
-          return {
-            id: s.id,
-            title: s.title,
-            date: sDate,
-            time: sTime,
-            duration: '30 mins',
-            status: isAttended ? 'attended' : 'upcoming',
-            platform: s.platform_source === 'google_meet' ? 'Google Meet' : 'Nimad Room',
-            meeting_url: s.external_meeting_url || `/session/${s.id}`,
-            attendees: s.audience || 'Attenders',
-            objective: s.objective || 'Live conversation intelligence',
-            desired_outcome: s.desired_outcome || 'Verified decisions and action points',
-            transcripts: [],
-            qa_list: s.important_questions ? [{
-              speaker: 'Pre-meeting Goal',
-              question: s.important_questions,
-              answer: 'Automated AI Easy Answers generated live during meeting.',
-              talking_points: ['Instant talking points generated based on tone: ' + (s.tone || 'professional')]
-            }] : [],
-            decisions: [],
-            actions: []
-          };
-        });
-
-        const existingIds = new Set(realMapped.map(m => m.id));
-        meetingsStore = [...realMapped, ...baseline.filter(b => !existingIds.has(b.id))];
+        const sessions = await api.sessions.list();
+        renderSessions(sessions);
+        updateStats(sessions);
       } catch (err) {
-        console.warn('Could not fetch backend sessions, using baseline calendar:', err);
-        meetingsStore = baseline;
-      }
-
-      updateCalendarCounts();
-      renderCalendar();
-      checkUpcomingNotifications();
-      renderDaySummaryPanel(selectedDateIso);
-    }
-
-    function updateCalendarCounts() {
-      const total = meetingsStore.length;
-      const attended = meetingsStore.filter(m => m.status === 'attended').length;
-      const upcoming = meetingsStore.filter(m => m.status === 'upcoming').length;
-
-      document.getElementById('count-attended').textContent = attended;
-      document.getElementById('count-upcoming').textContent = upcoming;
-
-      document.getElementById('stats-bar').style.display = 'flex';
-      document.getElementById('stat-total').textContent = total;
-      document.getElementById('stat-attended').textContent = attended;
-      document.getElementById('stat-upcoming').textContent = upcoming;
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────────
-    // Simple Small Calendar Month Grid Renderer with Shaded Dates
-    // ─────────────────────────────────────────────────────────────────────────────
-    function renderCalendar() {
-      const monthNames = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-      ];
-      document.getElementById('cal-month-display').textContent = `${monthNames[currentCalMonth]} ${currentCalYear}`;
-
-      const gridEl = document.getElementById('mini-cal-days-grid');
-      gridEl.innerHTML = '';
-
-      const firstDayOfMonth = new Date(currentCalYear, currentCalMonth, 1);
-      const lastDayOfMonth = new Date(currentCalYear, currentCalMonth + 1, 0);
-      const daysInMonth = lastDayOfMonth.getDate();
-
-      // Day of week: 0=Sun, 1=Mon, ..., 6=Sat -> Convert to Mon=0 ... Sun=6
-      let startDayOfWeek = (firstDayOfMonth.getDay() + 6) % 7;
-
-      // Trailing days from previous month
-      const prevMonthLastDate = new Date(currentCalYear, currentCalMonth, 0).getDate();
-      for (let i = startDayOfWeek - 1; i >= 0; i--) {
-        const d = prevMonthLastDate - i;
-        const cell = createMiniDayCell(d, true, false, null, []);
-        gridEl.appendChild(cell);
-      }
-
-      // Current month days
-      const todayStr = formatIsoDate(new Date());
-      for (let day = 1; day <= daysInMonth; day++) {
-        const dateObj = new Date(currentCalYear, currentCalMonth, day);
-        const iso = formatIsoDate(dateObj);
-        const isToday = (iso === todayStr);
-
-        // Find meetings for this day
-        const dayMeetings = meetingsStore.filter(m => m.date === iso);
-
-        const cell = createMiniDayCell(day, false, isToday, iso, dayMeetings);
-        gridEl.appendChild(cell);
-      }
-
-      // Leading days from next month to complete 35 or 42 grid cells
-      const totalCellsSoFar = startDayOfWeek + daysInMonth;
-      const remainingCells = (totalCellsSoFar <= 35) ? (35 - totalCellsSoFar) : (42 - totalCellsSoFar);
-      for (let day = 1; day <= remainingCells; day++) {
-        const cell = createMiniDayCell(day, true, false, null, []);
-        gridEl.appendChild(cell);
+        document.getElementById('sessions-grid').innerHTML =
+          `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Failed to load sessions: ${escapeHtml(err.message)}</p></div>`;
       }
     }
 
-    function createMiniDayCell(dayNumber, isOtherMonth, isToday, isoDate, dayMeetings = []) {
-      const cell = document.createElement('div');
-      
-      const hasAttended = dayMeetings.some(m => m.status === 'attended');
-      const hasUpcoming = dayMeetings.some(m => m.status === 'upcoming');
+    function updateStats(sessions) {
+      const total = sessions.length;
+      const active = sessions.filter(s => s.status === 'active').length;
+      const ended = sessions.filter(s => s.status === 'ended').length;
+      if (total > 0) {
+        document.getElementById('stats-bar').style.display = 'flex';
+        document.getElementById('stat-total').textContent = total;
+        document.getElementById('stat-active').textContent = active;
+        document.getElementById('stat-ended').textContent = ended;
+      }
+    }
 
-      let shadingClass = '';
-      if (hasAttended && hasUpcoming) {
-        shadingClass = ' shaded-both';
-      } else if (hasAttended) {
-        shadingClass = ' shaded-attended';
-      } else if (hasUpcoming) {
-        shadingClass = ' shaded-upcoming';
+    function statusBadge(status) {
+      const map = {
+        active: { label: 'Active', cls: 'status-active' },
+        ended:  { label: 'Ended',  cls: 'status-ended' },
+        setup:  { label: 'Setup',  cls: 'status-setup' },
+      };
+      const s = map[status] || { label: status, cls: '' };
+      return `<span class="badge ${s.cls}">${s.label}</span>`;
+    }
+
+    function renderSessions(sessions) {
+      const grid = document.getElementById('sessions-grid');
+      if (!sessions.length) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1">
+            <div class="empty-icon">💬</div>
+            <h3>No sessions yet</h3>
+            <p>Start your first conversation session to get AI-powered insights.</p>
+            <button class="btn btn-primary" onclick="openNewSessionModal()">Start Session</button>
+          </div>`;
+        return;
       }
 
-      const isSelected = (isoDate && isoDate === selectedDateIso);
-
-      cell.className = 'mini-day-cell' + 
-        (isOtherMonth ? ' other-month' : '') + 
-        (isToday ? ' is-today' : '') + 
-        (isSelected ? ' is-selected' : '') +
-        shadingClass;
-
-      let titleTooltip = `${isoDate || ''}`;
-      if (hasAttended && hasUpcoming) {
-        titleTooltip += ` — Attended & Upcoming Meetings`;
-      } else if (hasAttended) {
-        titleTooltip += ` — Attended Meeting Occurred (Shaded)`;
-      } else if (hasUpcoming) {
-        titleTooltip += ` — Future Meeting Scheduled (Shaded)`;
-      }
-      cell.title = titleTooltip;
-
-      // Inner number and indicator dots
-      cell.innerHTML = `
-        <span class="mini-day-number">${dayNumber}</span>
-        <div class="day-indicators-row">
-          ${hasAttended ? '<span class="cal-dot-attended" title="Attended"></span>' : ''}
-          ${hasUpcoming ? '<span class="cal-dot-upcoming" title="Upcoming"></span>' : ''}
+      grid.innerHTML = sessions.map(s => `
+        <div class="session-card" onclick="window.location.href='/session/${s.id}'" role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter')window.location.href='/session/${s.id}'">
+          <div class="session-card-header">
+            <div class="session-card-title">${escapeHtml(s.title)}</div>
+            ${statusBadge(s.status)}
+          </div>
+          ${s.objective ? `<div class="session-card-objective">◆ ${escapeHtml(s.objective)}</div>` : ''}
+          ${s.desired_outcome ? `<div style="font-size:0.75rem;color:var(--clr-text-dim);margin-bottom:8px">🎯 Target: ${escapeHtml(s.desired_outcome)}</div>` : ''}
+          <div class="session-card-footer" style="justify-content:space-between">
+            <div style="display:flex;gap:6px;align-items:center">
+              <span class="badge mode-badge">${s.mode === 'group' ? 'GROUP' : '1:1'}</span>
+              <span style="font-size:.74rem;color:var(--clr-text-dim)">${timeAgo(s.created_at)}</span>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center" onclick="event.stopPropagation()">
+              <button class="btn btn-ghost btn-xs" title="Edit Session Details" onclick="openEditSessionModal('${s.id}', '${escapeHtml(s.title).replace(/'/g, "\\'")}', '${escapeHtml(s.objective || '').replace(/'/g, "\\'")}', '${escapeHtml(s.desired_outcome || '').replace(/'/g, "\\'")}', '${escapeHtml(s.tone || 'professional').replace(/'/g, "\\'")}', event)">✏️ Edit</button>
+              <button class="btn btn-ghost btn-xs" style="color:#ef4444" title="Delete Session" onclick="confirmDeleteSession('${s.id}', '${escapeHtml(s.title).replace(/'/g, "\\'")}', event)">🗑️</button>
+            </div>
+          </div>
         </div>
-      `;
+      `).join('');
 
-      if (!isOtherMonth && isoDate) {
-        cell.onclick = () => {
-          selectedDateIso = isoDate;
-          renderCalendar();
-          renderDaySummaryPanel(isoDate);
-
-          // If date has meetings, and user double clicks or single clicks, open modal if 1 meeting
-          if (dayMeetings && dayMeetings.length === 1) {
-            openMeetingDetailsModal(dayMeetings[0].id);
-          }
-        };
-      }
-
-      return cell;
+      // Prepend new session card
+      const newCard = document.createElement('div');
+      newCard.className = 'new-session-card';
+      newCard.setAttribute('role', 'button');
+      newCard.setAttribute('tabindex', '0');
+      newCard.onclick = () => openNewSessionModal();
+      newCard.onkeydown = (e) => { if (e.key === 'Enter') openNewSessionModal(); };
+      newCard.innerHTML = `
+        <div class="new-session-icon">✦</div>
+        <div style="font-weight:600;color:var(--clr-text)">New Session</div>
+        <div style="font-size:.8rem;color:var(--clr-text-dim)">Start a new conversation</div>`;
+      grid.prepend(newCard);
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    // Selected Day Summary Panel (Right side of Calendar Workspace)
-    // ─────────────────────────────────────────────────────────────────────────────
-    function renderDaySummaryPanel(isoDate) {
-      const panelList = document.getElementById('panel-meetings-list');
-      const titleEl = document.getElementById('panel-selected-date-title');
-      const subtitleEl = document.getElementById('panel-selected-date-subtitle');
-      const todayStr = formatIsoDate(new Date());
-
-      const dObj = new Date(isoDate + 'T00:00:00');
-      const formattedDateStr = dObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
-
-      if (isoDate === todayStr) {
-        titleEl.textContent = `Today • ${formattedDateStr}`;
-      } else {
-        titleEl.textContent = formattedDateStr;
-      }
-
-      const dayMeetings = meetingsStore.filter(m => m.date === isoDate);
-
-      if (!dayMeetings.length) {
-        subtitleEl.textContent = 'No meetings scheduled on this date.';
-        panelList.innerHTML = `
-          <div style="text-align:center;padding:36px 20px;color:#a1a1aa;background:rgba(20,20,26,0.6);border-radius:12px;border:1px dashed rgba(255,255,255,0.12)">
-            <p style="font-size:0.95rem;color:#ffffff;font-weight:700;margin-bottom:6px">No Meetings On This Day</p>
-            <p style="font-size:0.82rem;margin-bottom:14px">Select any shaded date on the calendar or schedule a new session.</p>
-            <button class="btn btn-secondary btn-sm" onclick="openScheduleMeetingModal('${isoDate}')">
-              + Schedule Meeting for ${isoDate}
-            </button>
-          </div>
-        `;
-        return;
-      }
-
-      subtitleEl.textContent = `${dayMeetings.length} meeting(s) on this date. Click to review AI transcripts, questions, and answers.`;
-
-      panelList.innerHTML = dayMeetings.map(m => {
-        const isAttended = (m.status === 'attended');
-        return `
-          <div class="meeting-summary-card" onclick="openMeetingDetailsModal('${m.id}')" role="button" tabindex="0">
-            <div class="meeting-card-top">
-              <span class="meeting-card-time">${escapeHtml(m.time)} (${escapeHtml(m.duration || '30m')})</span>
-              <span class="badge" style="background:${isAttended ? 'rgba(255,255,255,0.15)' : 'rgba(16,185,129,0.2)'};color:${isAttended ? '#ffffff' : '#34d399'};font-weight:800;font-size:0.7rem;font-family:var(--font-mono)">
-                ${isAttended ? 'ATTENDED' : 'UPCOMING'}
-              </span>
-            </div>
-
-            <div class="meeting-card-title">${escapeHtml(m.title)}</div>
-
-            <div class="meeting-card-details">
-              <span>Platform: ${escapeHtml(m.platform || 'Google Meet')}</span>
-              <span>•</span>
-              <span>Attenders: ${escapeHtml(m.attendees || 'Team Members')}</span>
-            </div>
-
-            ${m.objective ? `
-              <div class="meeting-card-highlights">
-                <strong>Objective:</strong> ${escapeHtml(m.objective)}
-              </div>
-            ` : ''}
-
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
-              <span style="font-size:0.75rem;color:#38bdf8;font-weight:700">
-                ${isAttended ? 'View Full Audio Transcripts &amp; Q&amp;A →' : 'View Prepared Agenda &amp; Join Room →'}
-              </span>
-              <button class="btn btn-primary btn-xs" onclick="event.stopPropagation();openMeetingDetailsModal('${m.id}')" style="background:#ffffff;color:#000;font-weight:800">
-                Open Intelligence Hub
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    window.scheduleForSelectedDate = () => {
-      openScheduleMeetingModal(selectedDateIso);
-    };
-
-    // ─────────────────────────────────────────────────────────────────────────────
-    // Upcoming Meeting Notification Engine
-    // ─────────────────────────────────────────────────────────────────────────────
-    function checkUpcomingNotifications() {
-      const todayStr = formatIsoDate(new Date());
-      const upcoming = meetingsStore.filter(m => m.status === 'upcoming');
-
-      if (!upcoming.length) {
-        document.getElementById('upcoming-notification-banner').style.display = 'none';
-        return;
-      }
-
-      activeUpcomingMeeting = upcoming[0];
-      const banner = document.getElementById('upcoming-notification-banner');
-      banner.style.display = 'flex';
-
-      document.getElementById('alert-meeting-title').textContent = activeUpcomingMeeting.title;
-      document.getElementById('alert-meeting-time').textContent =
-        `${activeUpcomingMeeting.date === todayStr ? 'Today' : activeUpcomingMeeting.date} at ${activeUpcomingMeeting.time} • ${activeUpcomingMeeting.platform || 'Google Meet'}`;
-
-      const countdownEl = document.getElementById('alert-countdown-pill');
-      if (activeUpcomingMeeting.date === todayStr) {
-        countdownEl.textContent = 'STARTS TODAY';
-      } else {
-        countdownEl.textContent = `SCHEDULED FOR ${activeUpcomingMeeting.date}`;
-      }
-
-      if (!window.__hasAlertedUpcoming && activeUpcomingMeeting.date === todayStr) {
-        window.__hasAlertedUpcoming = true;
-        setTimeout(() => {
-          toast(`Upcoming Meeting Today: "${activeUpcomingMeeting.title}" at ${activeUpcomingMeeting.time}`, 'info');
-        }, 1500);
-      }
-    }
-
-    window.requestNotificationPermission = async () => {
-      if (!('Notification' in window)) {
-        toast('Browser notifications are not supported in this browser.', 'warning');
-        return;
-      }
-      try {
-        const perm = await Notification.requestPermission();
-        if (perm === 'granted') {
-          toast('Desktop notifications enabled! You will be alerted before meetings.', 'success');
-          document.getElementById('btn-request-notify-perm').textContent = 'Desktop Alerts Enabled';
-          new Notification('Nimad AI Conversation Copilot', {
-            body: `Alerts active for upcoming Google Calendar meetings. Next: ${activeUpcomingMeeting?.title || 'Meeting'}`,
-            icon: '/assets/nimad-symbol-white.png'
-          });
-        } else {
-          toast('Notification permission was dismissed or blocked.', 'warning');
-        }
-      } catch (err) {
-        toast(`Notification error: ${err.message}`, 'error');
+    window.joinMeetingPrompt = () => {
+      const code = prompt('Enter Meeting Room ID or paste Meeting Link:');
+      if (code && code.trim()) {
+        const clean = code.trim().replace(/^.*\/session\//, '');
+        window.location.href = `/session/${clean}`;
       }
     };
 
-    window.viewUpcomingMeetingPrep = () => {
-      if (activeUpcomingMeeting) {
-        openMeetingDetailsModal(activeUpcomingMeeting.id);
-      }
-    };
-
-    window.joinUpcomingMeetingNow = () => {
-      if (activeUpcomingMeeting) {
-        if (activeUpcomingMeeting.meeting_url.startsWith('http')) {
-          window.open(activeUpcomingMeeting.meeting_url, '_blank');
-        } else {
-          window.location.href = activeUpcomingMeeting.meeting_url;
-        }
-      }
-    };
-
-    // ─────────────────────────────────────────────────────────────────────────────
-    // Calendar Navigation & Controls
-    // ─────────────────────────────────────────────────────────────────────────────
-    window.navigateCalendarMonth = (delta) => {
-      currentCalMonth += delta;
-      if (currentCalMonth > 11) {
-        currentCalMonth = 0;
-        currentCalYear++;
-      } else if (currentCalMonth < 0) {
-        currentCalMonth = 11;
-        currentCalYear--;
-      }
-      renderCalendar();
-    };
-
-    window.jumpCalendarToToday = () => {
-      const d = new Date();
-      currentCalYear = d.getFullYear();
-      currentCalMonth = d.getMonth();
-      selectedDateIso = formatIsoDate(d);
-      renderCalendar();
-      renderDaySummaryPanel(selectedDateIso);
-    };
-
-    window.syncGoogleCalendar = (btn) => {
-      setLoading(btn, true, 'Syncing with Google…');
-      setTimeout(() => {
-        setLoading(btn, false);
-        loadCalendarMeetings();
-        toast('Google Calendar synchronized successfully! All events and attendee lists up to date.', 'success');
-      }, 700);
-    };
-
-    // ─────────────────────────────────────────────────────────────────────────────
-    // Meeting Intelligence Modal (Details, Transcripts, Questions & Answers)
-    // ─────────────────────────────────────────────────────────────────────────────
-    window.openMeetingDetailsModal = (meetingId) => {
-      const meeting = meetingsStore.find(m => m.id === meetingId);
-      if (!meeting) return;
-
-      const isAttended = (meeting.status === 'attended');
-
+    window.openNewSessionModal = () => {
       const overlay = showModal(`
-        <div class="meeting-modal-container">
-          <!-- Modal Header -->
-          <div class="meeting-modal-header">
-            <div class="meeting-modal-title-area">
-              <h3>${escapeHtml(meeting.title)}</h3>
-              <div class="meeting-modal-meta-row">
-                <span class="badge" style="background:${isAttended ? '#ffffff' : '#34d399'};color:#000000;font-weight:800;font-family:var(--font-mono)">
-                  ${isAttended ? 'ATTENDED MEETING' : 'UPCOMING MEETING'}
-                </span>
-                <span>Date: ${escapeHtml(meeting.date)} at ${escapeHtml(meeting.time)}</span>
-                <span>•</span>
-                <span>Platform: ${escapeHtml(meeting.platform || 'Google Meet')}</span>
-                <span>•</span>
-                <span>Duration: ${escapeHtml(meeting.duration || '30 mins')}</span>
-              </div>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center">
-              ${isAttended ? `
-                <a href="${meeting.meeting_url}" class="btn btn-primary btn-sm" target="_blank" style="background:#ffffff;color:#000;font-weight:800">
-                  Open Session Room →
-                </a>
-              ` : `
-                <a href="${meeting.meeting_url}" class="btn btn-primary btn-sm" target="_blank" style="background:#ffffff;color:#000;font-weight:800">
-                  Join Google Meet →
-                </a>
-              `}
-              <button class="btn btn-ghost btn-icon" onclick="this.closest('.modal-overlay').remove()">✕</button>
-            </div>
+        <div class="modal-header">
+          <h3>Create New Meeting</h3>
+          <button class="btn btn-ghost btn-icon" onclick="this.closest('.modal-overlay').remove()" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="ns-title">Meeting Title <span class="required">*</span></label>
+            <input id="ns-title" class="form-input" type="text" placeholder="e.g. Acme Corp Technical Architecture & Procurement Review" required />
           </div>
-
-          <!-- Modal Tabs -->
-          <div class="meeting-modal-tabs">
-            <button class="meeting-tab-btn active" id="mtab-btn-qa" onclick="switchMeetingModalTab('qa')">
-              <span class="neon-pad neon-pad-xs neon-pad-amber"><svg viewBox="0 0 24 24"><path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.9-6.1l-1.4 1.4M6.3 17.7l-1.4 1.4m0-12.8l1.4 1.4m11.4 11.4l1.4 1.4"/></svg></span>
-              Questions &amp; Answers (${meeting.qa_list ? meeting.qa_list.length : 0})
-            </button>
-            <button class="meeting-tab-btn" id="mtab-btn-transcripts" onclick="switchMeetingModalTab('transcripts')">
-              <span class="neon-pad neon-pad-xs neon-pad-cyan"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3zM19 10v2a7 7 0 01-14 0v-2M12 19v4m-4 0h8"/></svg></span>
-              Meeting Transcripts (${meeting.transcripts ? meeting.transcripts.length : 0})
-            </button>
-            <button class="meeting-tab-btn" id="mtab-btn-overview" onclick="switchMeetingModalTab('overview')">
-              <span class="neon-pad neon-pad-xs neon-pad-silver"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></span>
-              Overview &amp; Objectives
-            </button>
-            <button class="meeting-tab-btn" id="mtab-btn-decisions" onclick="switchMeetingModalTab('decisions')">
-              <span class="neon-pad neon-pad-xs neon-pad-emerald"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span>
-              Decisions &amp; Actions
-            </button>
+          <div class="form-group">
+            <label class="form-label" for="ns-call-type">Meeting Type</label>
+            <select id="ns-call-type" class="form-select">
+              <option value="video">📹 Video Call Meeting (Zoom Style)</option>
+              <option value="audio">🎙️ Audio-Only Meeting</option>
+            </select>
           </div>
-
-          <!-- Modal Body Content -->
-          <div class="meeting-modal-body">
-            
-            <!-- TAB 1: Questions & Answers -->
-            <div id="mtab-pane-qa">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
-                <p style="font-size:0.85rem;color:#a1a1aa">
-                  Objective-aligned <strong>Easy Answers</strong> &amp; talking points surfaced automatically by Nimad Copilot.
-                </p>
-                <button class="btn btn-secondary btn-xs" onclick="promptAddMeetingQuestion('${meeting.id}')">
-                  + Ask New Question
-                </button>
-              </div>
-
-              <div class="qa-card-list" id="modal-qa-card-list">
-                ${renderMeetingQaCards(meeting.qa_list)}
-              </div>
-            </div>
-
-            <!-- TAB 2: Meeting Transcripts -->
-            <div id="mtab-pane-transcripts" style="display:none">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
-                <input type="text" id="transcript-search-input" class="form-input" placeholder="Search transcript by keyword or speaker…" style="max-width:320px;padding:8px 12px;font-size:0.82rem" oninput="filterModalTranscripts()" />
-                <button class="btn btn-secondary btn-xs" onclick="copyMeetingTranscript('${meeting.id}')">
-                  Copy Full Transcript
-                </button>
-              </div>
-
-              <div id="modal-transcript-list">
-                ${renderMeetingTranscriptBubbles(meeting.transcripts)}
-              </div>
-            </div>
-
-            <!-- TAB 3: Overview & Objectives -->
-            <div id="mtab-pane-overview" style="display:none">
-              <div style="background:rgba(20,20,26,0.85);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:18px;margin-bottom:16px">
-                <div style="font-size:0.75rem;font-family:var(--font-mono);color:#ffffff;font-weight:800;text-transform:uppercase;margin-bottom:6px">
-                  Primary Meeting Objective
-                </div>
-                <div style="font-size:0.95rem;color:#ffffff;font-weight:700">
-                  ${escapeHtml(meeting.objective || 'Not specified')}
-                </div>
-              </div>
-
-              <div style="background:rgba(20,20,26,0.85);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:18px;margin-bottom:16px">
-                <div style="font-size:0.75rem;font-family:var(--font-mono);color:#ffffff;font-weight:800;text-transform:uppercase;margin-bottom:6px">
-                  Desired Target Outcome
-                </div>
-                <div style="font-size:0.95rem;color:#ffffff">
-                  ${escapeHtml(meeting.desired_outcome || 'Verified agreements and consensus')}
-                </div>
-              </div>
-
-              <div style="background:rgba(20,20,26,0.85);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:18px">
-                <div style="font-size:0.75rem;font-family:var(--font-mono);color:#ffffff;font-weight:800;text-transform:uppercase;margin-bottom:6px">
-                  Attenders &amp; Stakeholders
-                </div>
-                <div style="font-size:0.9rem;color:#e4e4e7">
-                  ${escapeHtml(meeting.attendees || 'Team Members')}
-                </div>
-              </div>
-            </div>
-
-            <!-- TAB 4: Decisions & Actions -->
-            <div id="mtab-pane-decisions" style="display:none">
-              <div style="margin-bottom:18px">
-                <h4 style="font-size:0.95rem;font-weight:800;color:#ffffff;margin-bottom:10px">Immutable Decision Ledger</h4>
-                ${(meeting.decisions && meeting.decisions.length) ? `
-                  <div style="display:flex;flex-direction:column;gap:8px">
-                    ${meeting.decisions.map(d => `
-                      <div style="background:rgba(20,20,26,0.85);border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
-                        <span style="font-size:0.88rem;color:#ffffff">${escapeHtml(d.text)}</span>
-                        <span class="badge" style="background:#ffffff;color:#000;font-weight:800">${escapeHtml(d.status)}</span>
-                      </div>
-                    `).join('')}
-                  </div>
-                ` : `
-                  <p style="font-size:0.85rem;color:#a1a1aa">No decisions logged yet.</p>
-                `}
-              </div>
-
-              <div>
-                <h4 style="font-size:0.95rem;font-weight:800;color:#ffffff;margin-bottom:10px">Action Commitments</h4>
-                ${(meeting.actions && meeting.actions.length) ? `
-                  <div style="display:flex;flex-direction:column;gap:8px">
-                    ${meeting.actions.map(a => `
-                      <div style="background:rgba(20,20,26,0.85);border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
-                        <span style="font-size:0.88rem;color:#ffffff">• ${escapeHtml(a.task)}</span>
-                        <span style="font-size:0.75rem;color:#a1a1aa">Owner: ${escapeHtml(a.owner)} (${escapeHtml(a.due)})</span>
-                      </div>
-                    `).join('')}
-                  </div>
-                ` : `
-                  <p style="font-size:0.85rem;color:#a1a1aa">No action items assigned yet.</p>
-                `}
-              </div>
-            </div>
-
+          <div class="form-group">
+            <label class="form-label" for="ns-mode">Format</label>
+            <select id="ns-mode" class="form-select">
+              <option value="group">Organization / Multi-Attender Meeting</option>
+              <option value="one_to_one">One-to-One 1:1 Sync</option>
+            </select>
           </div>
-
-          <!-- Modal Footer -->
-          <div class="modal-footer" style="padding:16px 24px;border-top:1px solid rgba(255,255,255,0.12)">
-            <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Close</button>
-            <button class="btn btn-secondary" onclick="exportMeetingIntelligence('${meeting.id}')">Export TXT / Markdown</button>
-            ${isAttended ? `
-              <a href="${meeting.meeting_url}" class="btn btn-primary" style="background:#ffffff;color:#000;font-weight:800">Launch Copilot Room →</a>
-            ` : `
-              <a href="${meeting.meeting_url}" target="_blank" class="btn btn-primary" style="background:#ffffff;color:#000;font-weight:800">Join Meeting Link →</a>
-            `}
+          <div class="form-group">
+            <label class="form-label" for="ns-objective">Primary Objective</label>
+            <input id="ns-objective" class="form-input" type="text" placeholder="e.g. Present enterprise architecture, address SOC2 concerns, secure pilot sign-off" />
           </div>
+          <div class="form-group">
+            <label class="form-label" for="ns-outcome">Desired Outcome</label>
+            <input id="ns-outcome" class="form-input" type="text" placeholder="e.g. Confirmed pilot timeline and agreement to begin integration" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ns-questions">Important Questions to Address</label>
+            <input id="ns-questions" class="form-input" type="text" placeholder="e.g. What is the SLA? Can we deploy on-premise? What is the pricing?" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ns-tone">Preferred Response Tone</label>
+            <select id="ns-tone" class="form-select">
+              <option value="professional">Professional & Executive</option>
+              <option value="collaborative">Collaborative & Empathetic</option>
+              <option value="assertive">Assertive & Direct</option>
+              <option value="diplomatic">Diplomatic & Strategic</option>
+              <option value="concise">Crisp & Concise</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ns-audience">Meeting Attenders & Organization</label>
+            <input id="ns-audience" class="form-input" type="text" placeholder="e.g. Sarah Chen (VP Engineering), David Miller (Procurement)" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ns-topics">Key Topics to Track (Auto-Answers)</label>
+            <input id="ns-topics" class="form-input" type="text" placeholder="e.g. pricing, SOC2, integrations, delivery timeline" />
+          </div>
+          <div style="background:#141417;border:1px solid var(--clr-border);border-radius:var(--radius-sm);padding:12px;font-size:.8rem;color:var(--clr-text-muted)">
+            ⚡ <strong>AI Copilot Live:</strong> In-meeting audio from attenders is transcribed live. When any attender asks questions, instant <strong>Easy Answers</strong> are generated in the sidebar.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+          <button class="btn btn-primary" id="create-session-btn" onclick="createSession(this)">Launch Meeting Room →</button>
         </div>
       `);
     };
 
-    function renderMeetingQaCards(qaList) {
-      if (!qaList || !qaList.length) {
-        return `
-          <div style="text-align:center;padding:36px;color:#a1a1aa;background:rgba(20,20,26,0.6);border-radius:10px;border:1px dashed rgba(255,255,255,0.15)">
-            <p style="font-size:0.95rem;color:#ffffff;font-weight:700;margin-bottom:6px">No Questions Recorded Yet</p>
-            <p style="font-size:0.82rem">Questions asked in this meeting will be transcribed with instant AI Easy Answers.</p>
-          </div>
-        `;
+    window.createSession = async (btn) => {
+      const title = document.getElementById('ns-title').value.trim();
+      if (!title) { toast('Please enter a meeting title', 'error'); return; }
+
+      setLoading(btn, true, 'Launching…');
+      try {
+        const session = await api.sessions.create({
+          title,
+          mode: document.getElementById('ns-mode').value,
+          objective: document.getElementById('ns-objective').value.trim() || null,
+          desired_outcome: document.getElementById('ns-outcome').value.trim() || null,
+          important_questions: document.getElementById('ns-questions').value.trim() || null,
+          tone: document.getElementById('ns-tone').value,
+          audience: document.getElementById('ns-audience').value.trim() || null,
+          key_topics: document.getElementById('ns-topics').value.trim() || null,
+        });
+        window.location.href = `/session/${session.id}`;
+      } catch (err) {
+        toast(`Failed: ${err.message}`, 'error');
+        setLoading(btn, false);
       }
-
-      return qaList.map(qa => `
-        <div class="qa-item-card">
-          <div class="qa-speaker-row">
-            <span class="qa-speaker-name">
-              <span class="neon-pad neon-pad-xs neon-pad-silver"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2m8-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg></span>
-              ${escapeHtml(qa.speaker || 'Attender')}
-            </span>
-            <span class="badge" style="background:#ffffff;color:#000000;font-size:0.65rem;font-weight:800">INSTANT ANSWER</span>
-          </div>
-          <div class="qa-question-text">
-            "${escapeHtml(qa.question)}"
-          </div>
-          <div class="qa-answer-box">
-            <div class="qa-answer-label">
-              <span class="neon-pad neon-pad-xs neon-pad-cyan"><svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></span>
-              <span>Nimad Copilot Instant Answer:</span>
-            </div>
-            <div class="qa-answer-text">
-              ${escapeHtml(qa.answer)}
-            </div>
-            ${(qa.talking_points && qa.talking_points.length) ? `
-              <ul class="qa-points-list">
-                ${qa.talking_points.map(pt => `<li>• ${escapeHtml(pt)}</li>`).join('')}
-              </ul>
-            ` : ''}
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function renderMeetingTranscriptBubbles(transcripts) {
-      if (!transcripts || !transcripts.length) {
-        return `
-          <div style="text-align:center;padding:36px;color:#a1a1aa;background:rgba(20,20,26,0.6);border-radius:10px;border:1px dashed rgba(255,255,255,0.15)">
-            <p style="font-size:0.95rem;color:#ffffff;font-weight:700;margin-bottom:6px">No Audio Transcripts Streamed Yet</p>
-            <p style="font-size:0.82rem">Transcripts stream in real-time when the meeting starts via Google Meet, Zoom, or the Companion Extension.</p>
-          </div>
-        `;
-      }
-
-      return transcripts.map(t => `
-        <div class="modal-transcript-bubble" data-text="${escapeHtml(t.text).toLowerCase()}" data-speaker="${escapeHtml(t.speaker).toLowerCase()}">
-          <div class="modal-speaker-name">
-            <span>${escapeHtml(t.speaker)}</span>
-            <span style="font-family:var(--font-mono);font-size:0.7rem;color:#a1a1aa">${escapeHtml(t.time || '')}</span>
-          </div>
-          <div class="modal-speaker-text">
-            "${escapeHtml(t.text)}"
-          </div>
-        </div>
-      `).join('');
-    }
-
-    window.switchMeetingModalTab = (tab) => {
-      ['qa', 'transcripts', 'overview', 'decisions'].forEach(t => {
-        document.getElementById(`mtab-pane-${t}`).style.display = (t === tab ? 'block' : 'none');
-        document.getElementById(`mtab-btn-${t}`).classList.toggle('active', t === tab);
-      });
     };
 
-    window.filterModalTranscripts = () => {
-      const q = (document.getElementById('transcript-search-input').value || '').toLowerCase().trim();
-      const bubbles = document.querySelectorAll('.modal-transcript-bubble');
-      bubbles.forEach(b => {
-        const text = b.getAttribute('data-text') || '';
-        const speaker = b.getAttribute('data-speaker') || '';
-        if (!q || text.includes(q) || speaker.includes(q)) {
-          b.style.display = 'block';
-        } else {
-          b.style.display = 'none';
-        }
-      });
-    };
-
-    window.promptAddMeetingQuestion = async (meetingId) => {
-      const q = prompt('Enter attender question to generate an instant Easy Answer:');
-      if (!q || !q.trim()) return;
-
-      const meeting = meetingsStore.find(m => m.id === meetingId);
-      if (!meeting) return;
-
-      const newQa = {
-        speaker: 'Live Attender Question',
-        question: q.trim(),
-        answer: `Nimad verified response aligned with objective "${meeting.objective || 'Meeting Success'}": All requirements and technical specifications are supported with full SLA backing.`,
-        talking_points: [
-          'Immediate objective-aligned talking point provided',
-          'Documented in decision ledger'
-        ]
-      };
-      if (!meeting.qa_list) meeting.qa_list = [];
-      meeting.qa_list.unshift(newQa);
-
-      document.getElementById('modal-qa-card-list').innerHTML = renderMeetingQaCards(meeting.qa_list);
-      document.getElementById('mtab-btn-qa').innerHTML = `
-        <span class="neon-pad neon-pad-xs neon-pad-amber"><svg viewBox="0 0 24 24"><path d="M12 2v2m0 16v2m-8-10H2m20 0h-2m-2.9-6.1l-1.4 1.4M6.3 17.7l-1.4 1.4m0-12.8l1.4 1.4m11.4 11.4l1.4 1.4"/></svg></span>
-        Questions &amp; Answers (${meeting.qa_list.length})
-      `;
-      toast('New question and instant answer added!', 'success');
-    };
-
-    window.copyMeetingTranscript = (meetingId) => {
-      const meeting = meetingsStore.find(m => m.id === meetingId);
-      if (!meeting || !meeting.transcripts) return;
-      const text = meeting.transcripts.map(t => `[${t.time}] ${t.speaker}: ${t.text}`).join('\n');
-      navigator.clipboard.writeText(text);
-      toast('Full transcript copied to clipboard!', 'success');
-    };
-
-    window.exportMeetingIntelligence = (meetingId) => {
-      const meeting = meetingsStore.find(m => m.id === meetingId);
-      if (!meeting) return;
-
-      let doc = `# ${meeting.title}\n`;
-      doc += `Date: ${meeting.date} at ${meeting.time}\n`;
-      doc += `Platform: ${meeting.platform} | Status: ${meeting.status.toUpperCase()}\n`;
-      doc += `Objective: ${meeting.objective || 'N/A'}\n\n`;
-
-      doc += `## Questions and Answers\n`;
-      (meeting.qa_list || []).forEach(qa => {
-        doc += `### Q (${qa.speaker}): ${qa.question}\n`;
-        doc += `A: ${qa.answer}\n`;
-        (qa.talking_points || []).forEach(pt => { doc += `- ${pt}\n`; });
-        doc += `\n`;
-      });
-
-      doc += `## Transcripts\n`;
-      (meeting.transcripts || []).forEach(t => {
-        doc += `[${t.time}] ${t.speaker}: ${t.text}\n`;
-      });
-
-      const blob = new Blob([doc], { type: 'text/markdown' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `${meeting.title.replace(/\s+/g, '_')}_intelligence.md`;
-      a.click();
-      toast('Export downloaded successfully!', 'success');
-    };
-
-    // ─────────────────────────────────────────────────────────────────────────────
-    // Schedule Meeting in Google Calendar Modal
-    // ─────────────────────────────────────────────────────────────────────────────
-    window.openScheduleMeetingModal = (preselectedDate = null) => {
-      const defaultDate = preselectedDate || formatIsoDate(new Date());
-
+    window.openEditSessionModal = (id, currentTitle, currentObjective, currentOutcome, currentTone, event) => {
+      if (event) event.stopPropagation();
       const overlay = showModal(`
         <div class="modal-header">
-          <h3>Schedule Meeting in Google Calendar</h3>
+          <h3>Edit Meeting Details</h3>
           <button class="btn btn-ghost btn-icon" onclick="this.closest('.modal-overlay').remove()">✕</button>
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label class="form-label" for="sm-title">Meeting Title <span class="required">*</span></label>
-            <input id="sm-title" class="form-input" type="text" placeholder="e.g. Acme Corp Technical Architecture &amp; Procurement Review" required />
+            <label class="form-label" for="edit-title">Meeting Title</label>
+            <input id="edit-title" class="form-input" type="text" value="${currentTitle}" required />
           </div>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div class="form-group">
-              <label class="form-label" for="sm-date">Meeting Date</label>
-              <input id="sm-date" class="form-input" type="date" value="${defaultDate}" required />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="sm-time">Time</label>
-              <input id="sm-time" class="form-input" type="time" value="14:00" required />
-            </div>
-          </div>
-
           <div class="form-group">
-            <label class="form-label" for="sm-platform">Meeting Platform</label>
-            <select id="sm-platform" class="form-select">
-              <option value="Google Meet">Google Meet (Auto-generate meet link)</option>
-              <option value="Zoom">Zoom Meeting</option>
-              <option value="Microsoft Teams">Microsoft Teams</option>
-              <option value="Nimad Video Room">Nimad Native Live Room</option>
+            <label class="form-label" for="edit-objective">Primary Objective</label>
+            <input id="edit-objective" class="form-input" type="text" value="${currentObjective}" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-outcome">Desired Outcome</label>
+            <input id="edit-outcome" class="form-input" type="text" value="${currentOutcome}" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-tone">Preferred Response Tone</label>
+            <select id="edit-tone" class="form-select">
+              <option value="professional" ${currentTone === 'professional' ? 'selected' : ''}>Professional & Executive</option>
+              <option value="collaborative" ${currentTone === 'collaborative' ? 'selected' : ''}>Collaborative & Empathetic</option>
+              <option value="assertive" ${currentTone === 'assertive' ? 'selected' : ''}>Assertive & Direct</option>
+              <option value="diplomatic" ${currentTone === 'diplomatic' ? 'selected' : ''}>Diplomatic & Strategic</option>
+              <option value="concise" ${currentTone === 'concise' ? 'selected' : ''}>Crisp & Concise</option>
             </select>
           </div>
-
-          <div class="form-group">
-            <label class="form-label" for="sm-attendees">Meeting Attenders</label>
-            <input id="sm-attendees" class="form-input" type="text" placeholder="e.g. Sarah Chen (VP Engineering), David Miller (Procurement)" />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="sm-objective">Primary Meeting Objective</label>
-            <input id="sm-objective" class="form-input" type="text" placeholder="e.g. Present enterprise failover architecture, verify SOC2 compliance" />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="sm-outcome">Desired Outcome</label>
-            <input id="sm-outcome" class="form-input" type="text" placeholder="e.g. Agreement on 99.9% uptime SLA and start of integration" />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="sm-questions">Anticipated Questions to Prepare Answers For</label>
-            <input id="sm-questions" class="form-input" type="text" placeholder="e.g. What is your SLA? Can we export audit logs to SIEM?" />
-          </div>
-
-          <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px">
-            <input type="checkbox" id="sm-sync-gcal" checked style="width:18px;height:18px;accent-color:#ffffff" />
-            <label for="sm-sync-gcal" style="font-size:0.85rem;color:#ffffff;cursor:pointer">
-              Synchronize to Google Calendar and invite attendees automatically
-            </label>
-          </div>
         </div>
-
         <div class="modal-footer">
           <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
-          <button class="btn btn-primary" id="btn-submit-schedule" onclick="submitScheduleMeeting(this)" style="background:#ffffff;color:#000000;font-weight:800">
-            Confirm &amp; Add to Google Calendar →
+          <button class="btn btn-primary" onclick="saveEditSession('${id}', this)">Save Changes</button>
+        </div>
+      `);
+    };
+
+    window.saveEditSession = async (id, btn) => {
+      const title = document.getElementById('edit-title').value.trim();
+      if (!title) { toast('Title cannot be empty', 'error'); return; }
+      setLoading(btn, true, 'Saving…');
+      try {
+        await api.sessions.update(id, {
+          title,
+          objective: document.getElementById('edit-objective').value.trim() || null,
+          desired_outcome: document.getElementById('edit-outcome').value.trim() || null,
+          tone: document.getElementById('edit-tone').value,
+        });
+        toast('Session updated successfully', 'success');
+        btn.closest('.modal-overlay').remove();
+        loadSessions();
+      } catch (err) {
+        toast(`Update failed: ${err.message}`, 'error');
+        setLoading(btn, false);
+      }
+    };
+
+    window.confirmDeleteSession = (id, title, event) => {
+      if (event) event.stopPropagation();
+      const overlay = showModal(`
+        <div class="modal-header">
+          <h3 style="color:#ef4444">Delete Meeting Session</h3>
+          <button class="btn btn-ghost btn-icon" onclick="this.closest('.modal-overlay').remove()">✕</button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete <strong>"${escapeHtml(title)}"</strong>?</p>
+          <div style="margin-top:12px;background:#1a0f0f;border:1px solid #7f1d1d;border-radius:var(--radius-sm);padding:12px;font-size:0.8rem;color:#fca5a5">
+            ⚠️ <strong>Data Retention Policy:</strong> This permanently deletes all associated transcripts, AI summaries, decisions, action items, and audit logs.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+          <button class="btn btn-primary" style="background:#dc2626;border-color:#b91c1c" onclick="executeDeleteSession('${id}', this)">
+            Yes, Delete Permanently
           </button>
         </div>
       `);
     };
 
-    window.submitScheduleMeeting = async (btn) => {
-      const title = document.getElementById('sm-title').value.trim();
-      if (!title) { toast('Please enter a meeting title', 'error'); return; }
-
-      const date = document.getElementById('sm-date').value;
-      const rawTime = document.getElementById('sm-time').value || '14:00';
-      const platform = document.getElementById('sm-platform').value;
-      const attendees = document.getElementById('sm-attendees').value.trim();
-      const objective = document.getElementById('sm-objective').value.trim();
-      const outcome = document.getElementById('sm-outcome').value.trim();
-      const questions = document.getElementById('sm-questions').value.trim();
-
-      const [h, m] = rawTime.split(':');
-      const hourNum = parseInt(h, 10);
-      const period = hourNum >= 12 ? 'PM' : 'AM';
-      const hour12 = (hourNum % 12) || 12;
-      const timeStr = `${hour12}:${m} ${period}`;
-
-      setLoading(btn, true, 'Adding to Calendar…');
-
+    window.executeDeleteSession = async (id, btn) => {
+      setLoading(btn, true, 'Deleting…');
       try {
-        const session = await api.sessions.create({
-          title,
-          mode: 'group',
-          objective: objective || null,
-          desired_outcome: outcome || null,
-          important_questions: questions || null,
-          audience: attendees || null,
-        });
-
-        const newMeeting = {
-          id: session.id || ('gcal-' + Date.now()),
-          title,
-          date,
-          time: timeStr,
-          duration: '45 mins',
-          status: 'upcoming',
-          platform,
-          meeting_url: (platform === 'Google Meet') ? 'https://meet.google.com/nimad-' + Math.random().toString(36).substring(7) : `/session/${session.id}`,
-          attendees,
-          objective,
-          desired_outcome: outcome,
-          transcripts: [],
-          qa_list: questions ? [{
-            speaker: 'Pre-meeting Prepared Answer',
-            question: questions,
-            answer: 'Pre-configured talking points ready for Copilot live answer suggestion.',
-            talking_points: ['Objective aligned response: ' + (objective || 'Meeting Success')]
-          }] : [],
-          decisions: [],
-          actions: []
-        };
-
-        meetingsStore.unshift(newMeeting);
-        selectedDateIso = date;
-        updateCalendarCounts();
-        renderCalendar();
-        renderDaySummaryPanel(selectedDateIso);
-        checkUpcomingNotifications();
-
+        await api.sessions.delete(id);
+        toast('Session deleted permanently', 'success');
         btn.closest('.modal-overlay').remove();
-        toast('Meeting successfully scheduled and added to Google Calendar!', 'success');
+        loadSessions();
       } catch (err) {
-        toast(`Failed to schedule meeting: ${err.message}`, 'error');
+        toast(`Delete failed: ${err.message}`, 'error');
         setLoading(btn, false);
       }
     };
 
-    // Quick Live Session Launch
-    window.openNewSessionModal = () => {
-      openScheduleMeetingModal();
-    };
-
-    window.joinMeetingPrompt = () => {
-      const code = prompt('Enter Google Meet Link, Zoom Link, or Nimad Room ID:');
-      if (code && code.trim()) {
-        const clean = code.trim().replace(/^.*\/session\//, '');
-        if (clean.startsWith('http')) {
-          window.open(clean, '_blank');
-        } else {
-          window.location.href = `/session/${clean}`;
-        }
-      }
-    };
-
-    // Initial Load
-    loadCalendarMeetings();
-
-    // Check upcoming meetings every 30 seconds
-    setInterval(checkUpcomingNotifications, 30000);
-
-    // Watchdog for dashboard hero logo video 10s looping
-    (function() {
-      const v = document.getElementById('dashboard-hero-logo-video');
-      if (!v) return;
-      v.muted = true;
-      v.defaultMuted = true;
-      v.setAttribute('playsinline', '');
-      v.setAttribute('loop', '');
-      const p = v.play();
-      if (p !== undefined) {
-        p.catch(() => {
-          const unlock = () => {
-            v.play().catch(() => {});
-            document.removeEventListener('click', unlock);
-            document.removeEventListener('touchstart', unlock);
-            document.removeEventListener('keydown', unlock);
-          };
-          document.addEventListener('click', unlock);
-          document.addEventListener('touchstart', unlock);
-          document.addEventListener('keydown', unlock);
-        });
-      }
-      v.addEventListener('ended', () => {
-        v.currentTime = 0;
-        v.play().catch(() => {});
-      });
-      v.addEventListener('timeupdate', () => {
-        if (v.currentTime >= 9.95) {
-          v.currentTime = 0;
-          v.play().catch(() => {});
-        }
-      });
-      setInterval(() => {
-        if (v.paused || v.ended || v.currentTime >= 9.9) {
-          v.currentTime = 0;
-          v.play().catch(() => {});
-        }
-      }, 10000);
-    })();
+    loadSessions();
   </script>
 </body>
 </html>

@@ -198,7 +198,7 @@ export const api = {
     },
   },
 
-  // ── Full Conversation Analysis (Nimad Intelligence Layer) ──────────
+  // ── Full Conversation Analysis (Clarivue Intelligence Layer) ──────────
   analysis: {
     run: (sessionId) =>
       apiFetch(`/api/v1/sessions/${sessionId}/analyze`, { method: 'POST' }),
@@ -241,33 +241,5 @@ export const api = {
     url: (sessionId, format = 'markdown') =>
       `${BASE}/api/v1/sessions/${sessionId}/export?format=${format}`,
   },
-
-  // ── ElevenLabs Neural TTS ─────────────────────────────────────────────
-  tts: {
-    speak: async (text, voiceId = null) => {
-      const token = getToken();
-      const headers = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = `Bearer ${token}`;
-
-      const resp = await fetch(`${BASE}/api/v1/tts/speak`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ text, voice_id: voiceId }),
-      });
-
-      if (!resp.ok) {
-        let msg = `HTTP ${resp.status}`;
-        try {
-          const err = await resp.json();
-          msg = err.detail || msg;
-        } catch (_) {}
-        throw new Error(msg);
-      }
-
-      const blob = await resp.blob();
-      return URL.createObjectURL(blob);
-    },
-  },
 };
-
 

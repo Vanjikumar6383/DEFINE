@@ -124,7 +124,7 @@ class IntegrationManager:
 
         if google_meet_service.validate_meeting_url(clean):
             meeting_id = google_meet_service.extract_meeting_code(clean)
-            notice = "Recognized Google Meet URL. Note: A URL alone does not grant access to private meeting audio or transcripts. Use the Nimad Browser Extension or paste transcripts below."
+            notice = "Recognized Google Meet URL. Note: A URL alone does not grant access to private meeting audio or transcripts. Use the Clarivue Browser Extension or paste transcripts below."
             return {
                 "valid": True,
                 "is_valid": True,
@@ -139,7 +139,7 @@ class IntegrationManager:
 
         if zoom_service.validate_meeting_url(clean):
             meeting_id = zoom_service.extract_meeting_id(clean)
-            notice = "Recognized Zoom Meeting URL. Note: A URL alone does not grant access to private meeting audio or transcripts. Use the Nimad Companion or paste transcripts below."
+            notice = "Recognized Zoom Meeting URL. Note: A URL alone does not grant access to private meeting audio or transcripts. Use the Clarivue Companion or paste transcripts below."
             return {
                 "valid": True,
                 "is_valid": True,
@@ -167,7 +167,7 @@ class IntegrationManager:
                 "reason": notice,
             }
 
-        notice = "Unrecognized meeting platform URL format. Nimad supports Google Meet (meet.google.com), Zoom (zoom.us), and Microsoft Teams (teams.microsoft.com)."
+        notice = "Unrecognized meeting platform URL format. Clarivue supports Google Meet (meet.google.com), Zoom (zoom.us), and Microsoft Teams (teams.microsoft.com)."
         return {
             "valid": False,
             "is_valid": False,
