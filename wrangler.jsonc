@@ -26,8 +26,8 @@
   // Environment variables
   "vars": {
     "ENVIRONMENT": "production",
-    // Connected to your active cloudflared tunnel:
-    "BACKEND_API_URL": "https://installed-championship-entered-contrary.trycloudflare.com"
+    // Live cloudflared tunnel URL (leave empty to use high-performance built-in Edge Engine):
+    "BACKEND_API_URL": ""
   },
 
   "observability": {

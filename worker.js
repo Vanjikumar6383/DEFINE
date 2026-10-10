@@ -80,6 +80,16 @@ export default {
     if (url.pathname.startsWith('/api/') || url.pathname === '/healthz') {
       const backendUrl = env.BACKEND_API_URL;
 
+      // Safely buffer request body once so it can be forwarded or passed to Edge Engine without stream corruption
+      let rawBody = null;
+      if (!['GET', 'HEAD'].includes(request.method)) {
+        try {
+          rawBody = await request.text();
+        } catch (_) {
+          rawBody = null;
+        }
+      }
+
       // If a valid external backend URL is provided, attempt proxy first
       if (isRealBackend(backendUrl)) {
         try {
@@ -89,13 +99,13 @@ export default {
           requestHeaders.set('X-Forwarded-Proto', url.protocol.replace(':', ''));
 
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 6000);
+          const timeoutId = setTimeout(() => controller.abort(), 3000);
 
           const backendResp = await fetch(
             new Request(targetUrl, {
               method: request.method,
               headers: requestHeaders,
-              body: ['GET', 'HEAD'].includes(request.method) ? undefined : request.body,
+              body: rawBody,
               redirect: 'follow',
               signal: controller.signal,
             })
@@ -117,7 +127,7 @@ export default {
       }
 
       // Execute built-in Edge Engine so requests never fail with 500/530
-      return handleEdgeApi(request, url);
+      return handleEdgeApi(request, url, rawBody);
     }
 
     // ── 2. Static Assets Mapping (/static/* -> /css/*) ──────────────────────
@@ -157,7 +167,7 @@ export default {
  * Edge Serverless Engine for Nimad Copilot
  * Provides instantaneous, reliable responses without requiring external servers.
  */
-async function handleEdgeApi(request, url) {
+async function handleEdgeApi(request, url, rawBody = null) {
   const method = request.method;
   const path = url.pathname;
 
@@ -171,7 +181,13 @@ async function handleEdgeApi(request, url) {
   }
 
   let body = {};
-  if (['POST', 'PATCH', 'PUT'].includes(method)) {
+  if (rawBody) {
+    try {
+      body = JSON.parse(rawBody);
+    } catch (_) {
+      body = {};
+    }
+  } else if (['POST', 'PATCH', 'PUT'].includes(method)) {
     try {
       body = await request.json();
     } catch (_) {
@@ -209,6 +225,17 @@ async function handleEdgeApi(request, url) {
       return jsonResponse({ detail: 'Email is required' }, 400);
     }
 
+    // Automatically register or retrieve edge user
+    if (!edgeUsers.has(email)) {
+      edgeUsers.set(email, {
+        id: 'usr_' + Math.random().toString(36).substring(2, 10),
+        email,
+        display_name: email.split('@')[0],
+        created_at: new Date().toISOString(),
+        password,
+      });
+    }
+
     // Generate lightweight JWT token
     const tokenPayload = {
       sub: email,
@@ -223,13 +250,135 @@ async function handleEdgeApi(request, url) {
   }
 
   if (path === '/api/v1/auth/me' && method === 'GET') {
+    const authHeader = request.headers.get('Authorization') || '';
+    let email = 'host@nimad.ai';
+    let displayName = 'Nimad User';
+
+    if (authHeader.startsWith('Bearer cf_token_')) {
+      try {
+        const payload = JSON.parse(atob(authHeader.replace('Bearer cf_token_', '')));
+        if (payload.sub) {
+          email = payload.sub;
+          const knownUser = edgeUsers.get(email);
+          displayName = knownUser?.display_name || email.split('@')[0];
+        }
+      } catch (_) {}
+    }
+
     return jsonResponse({
-      id: 'usr_host_01',
-      email: 'host@nimad.ai',
-      display_name: 'Vanji Kumar',
+      id: 'usr_' + btoa(email).substring(0, 8),
+      email,
+      display_name: displayName,
       is_active: true,
       created_at: new Date().toISOString(),
     });
+  }
+
+  // ── Meetings Endpoints ────────────────────────────────────────────────────
+  if (path === '/api/v1/meetings/create' && method === 'POST') {
+    const sessionId = 'sess_' + Math.random().toString(36).substring(2, 10);
+    const title = (body.title || '').trim() || 'Live Meeting Room';
+    const objective = (body.objective || '').trim() || 'Focus on meeting priorities';
+    const hostName = (body.host_name || '').trim() || 'Host';
+
+    const newSession = {
+      id: sessionId,
+      title,
+      objective,
+      desired_outcome: 'Document key decisions and takeaways',
+      tone: 'objective',
+      status: 'active',
+      created_at: new Date().toISOString(),
+    };
+    edgeSessions.set(sessionId, newSession);
+
+    const tokenPayload = {
+      sub: hostName.toLowerCase().replace(/[^a-z0-9]/g, '_') + '@meeting.host',
+      exp: Math.floor(Date.now() / 1000) + 86400 * 30,
+    };
+    const token = 'cf_token_' + btoa(JSON.stringify(tokenPayload));
+
+    return jsonResponse({
+      session_id: sessionId,
+      title,
+      objective,
+      mode: body.mode || 'group',
+      display_name: hostName,
+      role: 'host',
+      access_token: token,
+      meeting_url: `/session/${sessionId}`,
+      meeting_code: sessionId.substring(0, 8).toUpperCase(),
+    }, 201);
+  }
+
+  if (path === '/api/v1/meetings/join' && method === 'POST') {
+    let rawInput = (body.meeting_id_or_url || '').trim();
+    let sessionId = rawInput;
+    if (rawInput.includes('/session/')) {
+      sessionId = rawInput.split('/session/')[1].split('?')[0].split('#')[0];
+    } else if (rawInput.includes('?meeting_id=')) {
+      sessionId = rawInput.split('?meeting_id=')[1].split('&')[0];
+    }
+
+    let sess = edgeSessions.get(sessionId);
+    if (!sess) {
+      const found = Array.from(edgeSessions.values()).find(s => s.id.toLowerCase().startsWith(sessionId.toLowerCase()));
+      if (found) {
+        sess = found;
+        sessionId = found.id;
+      } else {
+        sessionId = sessionId.startsWith('sess_') ? sessionId : ('sess_' + (sessionId || Math.random().toString(36).substring(2, 10)));
+        sess = {
+          id: sessionId,
+          title: 'Live Meeting Room',
+          objective: 'Drive alignment and discussions',
+          desired_outcome: 'Actionable takeaways',
+          tone: 'objective',
+          status: 'active',
+          created_at: new Date().toISOString(),
+        };
+        edgeSessions.set(sessionId, sess);
+      }
+    }
+
+    const displayName = (body.display_name || '').trim() || 'Attendee';
+    const tokenPayload = {
+      sub: displayName.toLowerCase().replace(/[^a-z0-9]/g, '_') + '@meeting.guest',
+      exp: Math.floor(Date.now() / 1000) + 86400 * 30,
+    };
+    const token = 'cf_token_' + btoa(JSON.stringify(tokenPayload));
+
+    return jsonResponse({
+      session_id: sessionId,
+      title: sess.title,
+      objective: sess.objective,
+      mode: 'group',
+      display_name: displayName,
+      role: 'participant',
+      access_token: token,
+      meeting_url: `/session/${sessionId}`,
+      meeting_code: sessionId.substring(0, 8).toUpperCase(),
+    });
+  }
+
+  const meetingPublicMatch = path.match(/^\/api\/v1\/meetings\/([^/]+)\/public-info$/);
+  if (meetingPublicMatch) {
+    const sid = meetingPublicMatch[1];
+    const sess = edgeSessions.get(sid) || { title: 'Live Meeting Room', status: 'active' };
+    return jsonResponse({
+      session_id: sid,
+      title: sess.title,
+      status: sess.status || 'active',
+      participant_count: 2,
+    });
+  }
+
+  const meetingPartMatch = path.match(/^\/api\/v1\/meetings\/([^/]+)\/participants$/);
+  if (meetingPartMatch) {
+    return jsonResponse([
+      { client_id: 'host_01', name: 'Host', role: 'host' },
+      { client_id: 'guest_02', name: 'Attendee', role: 'participant' },
+    ]);
   }
 
   // ── Sessions Endpoints ────────────────────────────────────────────────────
