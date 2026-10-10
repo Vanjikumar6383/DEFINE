@@ -44,6 +44,22 @@ function jsonResponse(data, status = 200, extraHeaders = {}) {
   });
 }
 
+function safeBtoa(str) {
+  try {
+    return btoa(unescape(encodeURIComponent(str)));
+  } catch (_) {
+    return btoa(str);
+  }
+}
+
+function safeAtob(b64) {
+  try {
+    return decodeURIComponent(escape(atob(b64)));
+  } catch (_) {
+    return atob(b64);
+  }
+}
+
 function isRealBackend(url) {
   if (!url || typeof url !== 'string') return false;
   const trimmed = url.trim().toLowerCase();
@@ -55,111 +71,138 @@ function isRealBackend(url) {
     '127.0.0.1',
     '0.0.0.0',
     'placeholder',
+    'installed-championship-entered-contrary',
   ];
   return !placeholders.some((p) => trimmed.includes(p));
 }
 
 export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
+  async fetch(request, env, ctx) {
+    let url;
+    try {
+      url = new URL(request.url);
+    } catch (_) {
+      return new Response('Invalid Request URL', { status: 400 });
+    }
 
-    // ── Handle CORS Preflight ────────────────────────────────────────────────
-    if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        status: 204,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-          'Access-Control-Max-Age': '86400',
-        },
+    try {
+      // ── Handle CORS Preflight ────────────────────────────────────────────────
+      if (request.method === 'OPTIONS') {
+        return new Response(null, {
+          status: 204,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            'Access-Control-Max-Age': '86400',
+          },
+        });
+      }
+
+      // ── 1. API Route Handling (Proxy with Edge Engine Fallback) ─────────────
+      if (url.pathname.startsWith('/api/') || url.pathname === '/healthz') {
+        const backendUrl = env.BACKEND_API_URL;
+
+        // Safely buffer request body once so it can be forwarded or passed to Edge Engine without stream corruption
+        let rawBody = null;
+        if (!['GET', 'HEAD'].includes(request.method)) {
+          try {
+            rawBody = await request.text();
+          } catch (_) {
+            rawBody = null;
+          }
+        }
+
+        // If a valid external backend URL is provided, attempt proxy first
+        if (isRealBackend(backendUrl)) {
+          try {
+            const targetUrl = new URL(url.pathname + url.search, backendUrl);
+            const requestHeaders = new Headers(request.headers);
+            requestHeaders.set('X-Forwarded-Host', url.host);
+            requestHeaders.set('X-Forwarded-Proto', url.protocol.replace(':', ''));
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+            const backendResp = await fetch(
+              new Request(targetUrl, {
+                method: request.method,
+                headers: requestHeaders,
+                body: rawBody,
+                redirect: 'follow',
+                signal: controller.signal,
+              })
+            );
+            clearTimeout(timeoutId);
+
+            if (backendResp.ok || backendResp.status < 500) {
+              const respHeaders = new Headers(backendResp.headers);
+              respHeaders.set('Access-Control-Allow-Origin', '*');
+              return new Response(backendResp.body, {
+                status: backendResp.status,
+                statusText: backendResp.statusText,
+                headers: respHeaders,
+              });
+            }
+          } catch (_) {
+            // Backend unreachable or timeout -> fall back to Edge Engine below
+          }
+        }
+
+        // Execute built-in Edge Engine so requests never fail with 500/530
+        return await handleEdgeApi(request, url, rawBody);
+      }
+
+      // ── 2. Static Assets Mapping (/static/* -> /css/*) ──────────────────────
+      if (url.pathname.startsWith('/static/')) {
+        const mappedUrl = new URL(request.url);
+        mappedUrl.pathname = mappedUrl.pathname.replace('/static/', '/css/');
+        return await env.ASSETS.fetch(new Request(mappedUrl.toString()));
+      }
+
+      // ── 3. Dynamic Clean Routing: /session/:id -> /session.html ─────────────
+      if (url.pathname.startsWith('/session/')) {
+        const sessionUrl = new URL(request.url);
+        sessionUrl.pathname = '/session.html';
+        return await env.ASSETS.fetch(new Request(sessionUrl.toString()));
+      }
+
+      // ── 4. Clean Page URL Routing ───────────────────────────────────────────
+      const pageRoutes = {
+        '/': '/index.html',
+        '/dashboard': '/dashboard.html',
+        '/integrations': '/integrations.html',
+        '/session': '/session.html',
+        '/login': '/login.html',
+        '/meeting_test': '/meeting_test.html',
+      };
+
+      if (pageRoutes[url.pathname]) {
+        const pageUrl = new URL(request.url);
+        pageUrl.pathname = pageRoutes[url.pathname];
+        return await env.ASSETS.fetch(new Request(pageUrl.toString()));
+      }
+
+      // ── 5. Default: Cloudflare Workers Static Assets ────────────────────────
+      return await env.ASSETS.fetch(request);
+    } catch (unhandledErr) {
+      console.error('Unhandled Worker error on:', url?.pathname, unhandledErr);
+      if (url && url.pathname && url.pathname.startsWith('/api/')) {
+        return jsonResponse({
+          error: 'Worker Error',
+          detail: unhandledErr?.message || String(unhandledErr),
+        }, 500);
+      }
+      try {
+        if (env && env.ASSETS) {
+          return await env.ASSETS.fetch(request);
+        }
+      } catch (_) {}
+      return new Response('Internal Server Error: ' + (unhandledErr?.message || 'Unknown error'), {
+        status: 500,
+        headers: { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': '*' }
       });
     }
-
-    // ── 1. API Route Handling (Proxy with Edge Engine Fallback) ─────────────
-    if (url.pathname.startsWith('/api/') || url.pathname === '/healthz') {
-      const backendUrl = env.BACKEND_API_URL;
-
-      // Safely buffer request body once so it can be forwarded or passed to Edge Engine without stream corruption
-      let rawBody = null;
-      if (!['GET', 'HEAD'].includes(request.method)) {
-        try {
-          rawBody = await request.text();
-        } catch (_) {
-          rawBody = null;
-        }
-      }
-
-      // If a valid external backend URL is provided, attempt proxy first
-      if (isRealBackend(backendUrl)) {
-        try {
-          const targetUrl = new URL(url.pathname + url.search, backendUrl);
-          const requestHeaders = new Headers(request.headers);
-          requestHeaders.set('X-Forwarded-Host', url.host);
-          requestHeaders.set('X-Forwarded-Proto', url.protocol.replace(':', ''));
-
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-          const backendResp = await fetch(
-            new Request(targetUrl, {
-              method: request.method,
-              headers: requestHeaders,
-              body: rawBody,
-              redirect: 'follow',
-              signal: controller.signal,
-            })
-          );
-          clearTimeout(timeoutId);
-
-          if (backendResp.ok || backendResp.status < 500) {
-            const respHeaders = new Headers(backendResp.headers);
-            respHeaders.set('Access-Control-Allow-Origin', '*');
-            return new Response(backendResp.body, {
-              status: backendResp.status,
-              statusText: backendResp.statusText,
-              headers: respHeaders,
-            });
-          }
-        } catch (_) {
-          // Backend unreachable or timeout -> fall back to Edge Engine below
-        }
-      }
-
-      // Execute built-in Edge Engine so requests never fail with 500/530
-      return handleEdgeApi(request, url, rawBody);
-    }
-
-    // ── 2. Static Assets Mapping (/static/* -> /css/*) ──────────────────────
-    if (url.pathname.startsWith('/static/')) {
-      const mappedPath = url.pathname.replace('/static/', '/css/');
-      const staticReq = new Request(new URL(mappedPath, url.origin), request);
-      return env.ASSETS.fetch(staticReq);
-    }
-
-    // ── 3. Dynamic Clean Routing: /session/:id -> /session.html ─────────────
-    if (url.pathname.startsWith('/session/')) {
-      const sessionReq = new Request(new URL('/session.html', url.origin), request);
-      return env.ASSETS.fetch(sessionReq);
-    }
-
-    // ── 4. Clean Page URL Routing ───────────────────────────────────────────
-    const pageRoutes = {
-      '/': '/index.html',
-      '/dashboard': '/dashboard.html',
-      '/integrations': '/integrations.html',
-      '/session': '/session.html',
-      '/login': '/login.html',
-      '/meeting_test': '/meeting_test.html',
-    };
-
-    if (pageRoutes[url.pathname]) {
-      const pageReq = new Request(new URL(pageRoutes[url.pathname], url.origin), request);
-      return env.ASSETS.fetch(pageReq);
-    }
-
-    // ── 5. Default: Cloudflare Workers Static Assets ────────────────────────
-    return env.ASSETS.fetch(request);
   },
 };
 
@@ -241,7 +284,7 @@ async function handleEdgeApi(request, url, rawBody = null) {
       sub: email,
       exp: Math.floor(Date.now() / 1000) + 86400 * 30,
     };
-    const token = 'cf_token_' + btoa(JSON.stringify(tokenPayload));
+    const token = 'cf_token_' + safeBtoa(JSON.stringify(tokenPayload));
 
     return jsonResponse({
       access_token: token,
@@ -256,7 +299,7 @@ async function handleEdgeApi(request, url, rawBody = null) {
 
     if (authHeader.startsWith('Bearer cf_token_')) {
       try {
-        const payload = JSON.parse(atob(authHeader.replace('Bearer cf_token_', '')));
+        const payload = JSON.parse(safeAtob(authHeader.replace('Bearer cf_token_', '')));
         if (payload.sub) {
           email = payload.sub;
           const knownUser = edgeUsers.get(email);
@@ -266,7 +309,7 @@ async function handleEdgeApi(request, url, rawBody = null) {
     }
 
     return jsonResponse({
-      id: 'usr_' + btoa(email).substring(0, 8),
+      id: 'usr_' + safeBtoa(email).substring(0, 8),
       email,
       display_name: displayName,
       is_active: true,
