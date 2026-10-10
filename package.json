@@ -1,1 +1,14 @@
-{   "name": "define",   "version": "1.0.0",   "description": "DEFINE - AI Conversation Copilot",   "private": true,   "scripts": {     "build": "echo 'Static assets ready'",     "deploy": "wrangler deploy",     "dev": "wrangler dev"   },   "devDependencies": {     "wrangler": "^4.0.0"   } }
+{
+  "name": "nimad",
+  "version": "1.0.0",
+  "description": "DEFINE - AI Conversation Copilot",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Static assets ready'",
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
