@@ -1,0 +1,24 @@
+<!-- Nimad Logo SVG - White version for dark backgrounds -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" fill="none">
+  <!-- N Icon mark -->
+  <!-- Left pillar -->
+  <polygon points="42,30 62,30 62,170 42,170" fill="white"/>
+  <!-- Top-left serif point going up -->
+  <polygon points="42,30 62,30 42,10" fill="white"/>
+  <!-- Right pillar -->
+  <polygon points="138,30 158,30 158,170 138,170" fill="white"/>
+  <!-- Bottom-right serif point going down -->
+  <polygon points="138,170 158,170 158,190" fill="white"/>
+  <!-- Diagonal crossbar from top-right to bottom-left -->
+  <polygon points="62,30 158,30 138,60 62,60" fill="white" opacity="0.7"/>
+  <polygon points="62,140 138,170 62,170 42,140" fill="white" opacity="0.7"/>
+  <polygon points="62,60 138,60 62,140 42,140" fill="white"/>
+  <!-- NIMAD wordmark -->
+  <text x="100" y="210" 
+        font-family="'Inter', 'Arial', sans-serif" 
+        font-size="38" 
+        font-weight="900"
+        text-anchor="middle"
+        letter-spacing="4"
+        fill="white">NIMAD</text>
+</svg>

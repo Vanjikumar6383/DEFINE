@@ -1,0 +1,25 @@
+# Cloudflare Pages Headers Configuration
+
+/*
+  # Permissions Policy for WebRTC Audio, Camera, and Screen Capture
+  Permissions-Policy: microphone=(self "*"), camera=(self "*"), display-capture=(self "*"), speaker-selection=(self "*")
+  
+  # Security Headers
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  
+  # Access-Control / CORS for Extensions and WebRTC
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+  Access-Control-Allow-Headers: Authorization, Content-Type, Accept, X-Requested-With
+
+# Static CSS & JS Caching
+/css/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/js/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/assets/*
+  Cache-Control: public, max-age=604800, immutable

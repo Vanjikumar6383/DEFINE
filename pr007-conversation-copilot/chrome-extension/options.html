@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nimad Copilot — Extension Options & Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="options-container">
+    
+    <!-- Header -->
+    <header class="options-header">
+      <div class="brand" style="display:flex;align-items:center;gap:12px">
+        <img src="assets/nimad-symbol-white.png" alt="Nimad" style="height:32px;width:auto;">
+        <div>
+          <h1 class="brand-title" style="letter-spacing:-0.01em;font-weight:900">NIMAD COPILOT</h1>
+          <p class="brand-sub">◆ AI-POWERED IN-APP & EXTERNAL MEETING COPILOT</p>
+        </div>
+      </div>
+      <a href="http://127.0.0.1:8000/dashboard" id="link-web-dashboard" class="btn btn-secondary" target="_blank">
+        Open Web Dashboard ↗
+      </a>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="options-grid">
+
+      <!-- Column 1: Backend Connection & Preferences -->
+      <div class="options-col">
+        
+        <!-- Connection Card -->
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">🔌 Backend API Connection</h2>
+            <span class="status-pill status-checking" id="opt-connection-pill">
+              <span class="status-dot"></span>
+              <span id="opt-connection-text">Untested</span>
+            </span>
+          </div>
+          <p class="card-desc">Configure the URL of your Nimad FastAPI backend server.</p>
+          
+          <div class="form-group">
+            <label for="opt-api-url" class="form-label">Backend API URL</label>
+            <div class="input-with-button">
+              <input type="text" id="opt-api-url" class="form-input" placeholder="http://127.0.0.1:8000" />
+              <button class="btn btn-secondary" id="btn-test-connection">Test Connection</button>
+            </div>
+            <span class="form-hint">Default local development server: <code>http://127.0.0.1:8000</code></span>
+          </div>
+
+          <div class="test-result-box" id="test-result-box" style="display:none">
+            <span id="test-result-icon">✓</span>
+            <span id="test-result-text"></span>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-primary" id="btn-save-settings">Save Preferences</button>
+            <span class="save-status-msg" id="save-status-msg"></span>
+          </div>
+        </section>
+
+        <!-- Authentication Card -->
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">🔐 Authentication Status</h2>
+            <span class="badge" id="opt-auth-badge">NOT SIGNED IN</span>
+          </div>
+          <p class="card-desc">The extension uses your Nimad JWT bearer token to access your sessions and run AI conversation models.</p>
+
+          <div id="auth-status-details" class="auth-details-box">
+            <div class="auth-row">
+              <span class="auth-key">Current User:</span>
+              <span class="auth-val" id="opt-user-email">None</span>
+            </div>
+            <div class="auth-row">
+              <span class="auth-key">Token Stored:</span>
+              <span class="auth-val font-mono" id="opt-token-status">No token</span>
+            </div>
+          </div>
+
+          <div class="form-actions" style="margin-top:12px">
+            <button class="btn btn-secondary" id="btn-opt-signout">Clear Stored Token (Sign Out)</button>
+          </div>
+        </section>
+
+        <!-- General Preferences -->
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">⚙️ Copilot Preferences</h2>
+          </div>
+
+          <div class="form-group">
+            <label for="opt-default-objective" class="form-label">Default Meeting Objective</label>
+            <input type="text" id="opt-default-objective" class="form-input" placeholder="e.g. Strategic Alignment & Technical Decisions" />
+            <span class="form-hint">Pre-fills the objective input when you open the extension popup.</span>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Column 2: Supported Platforms & Privacy Guide -->
+      <div class="options-col">
+
+        <!-- Supported Platforms Guide -->
+        <section class="card" id="platforms-guide">
+          <div class="card-header">
+            <h2 class="card-title">🌐 Supported Meeting Platforms</h2>
+            <span class="badge" style="color:var(--clr-blue)">CONSENT-FIRST</span>
+          </div>
+          <p class="card-desc">Nimad Copilot is designed to complement existing web meeting platforms safely without unauthorized screen scraping or secret recording.</p>
+
+          <div class="platform-list">
+            
+            <div class="platform-item">
+              <div class="platform-name">
+                <span class="platform-icon">🟢</span>
+                <strong>Google Meet</strong>
+              </div>
+              <p class="platform-text">
+                1. Open Google Meet in any Chrome tab.<br>
+                2. During or after the meeting, copy transcript notes or live captions.<br>
+                3. Open Nimad Copilot popup (or right-click selected text → <em>Analyze with Nimad Copilot</em>).<br>
+                4. Instant AI replies and executive takeaways are produced immediately.
+              </p>
+            </div>
+
+            <div class="platform-item">
+              <div class="platform-name">
+                <span class="platform-icon">🔵</span>
+                <strong>Zoom Web Meetings</strong>
+              </div>
+              <p class="platform-text">
+                1. Open Zoom in Chrome browser.<br>
+                2. Export or copy meeting transcript text or key attendee dialogue.<br>
+                3. Paste into Nimad Copilot popup to run full objective-aware analysis.
+              </p>
+            </div>
+
+            <div class="platform-item">
+              <div class="platform-name">
+                <span class="platform-icon">🟣</span>
+                <strong>Microsoft Teams Web</strong>
+              </div>
+              <p class="platform-text">
+                1. In Teams meeting, open the Meeting Recap or live transcript feed.<br>
+                2. Copy discussion points and paste directly into the Nimad Copilot popup.
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Optional Context Capture Architecture -->
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">🛡️ Privacy & Architecture Disclosures</h2>
+          </div>
+          <div class="architecture-content">
+            <div class="arch-point">
+              <strong>Manifest V3 Compliance:</strong>
+              <p>Strictly uses modern Chrome Manifest V3 APIs with minimal required permissions (<code>storage</code>, <code>contextMenus</code>). No unnecessary tab recording or secret background monitoring.</p>
+            </div>
+            <div class="arch-point">
+              <strong>Zero Stored Secrets:</strong>
+              <p>AI provider keys (Groq, OpenAI, ElevenLabs) and database credentials remain exclusively on your secure Nimad backend. The browser extension only holds a short-lived user JWT token.</p>
+            </div>
+            <div class="arch-point">
+              <strong>Future Context Capture Roadmap:</strong>
+              <p>Future automated meeting caption capture will strictly utilize official Google Workspace, Zoom Developer, and Microsoft Graph APIs with clear, explicit attendee consent banners.</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <script src="options.js" type="module"></script>
+</body>
+</html>

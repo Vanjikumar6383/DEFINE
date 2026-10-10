@@ -1,0 +1,14 @@
+# Cloudflare Pages / Workers Configuration for Nimad AI Conversation Copilot
+name = "nimad-copilot"
+compatibility_date = "2024-04-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Cloudflare Pages static site directory
+pages_build_output_dir = "./frontend"
+
+[vars]
+APP_NAME = "Nimad — AI Conversation Copilot"
+APP_ENV = "production"
+# Set this to your live FastAPI backend URL (e.g., your Cloudflare Tunnel or VPS URL)
+# The Cloudflare Pages Function will proxy all /api/* and WebSockets to this URL without CORS issues!
+BACKEND_URL = "http://127.0.0.1:8000"

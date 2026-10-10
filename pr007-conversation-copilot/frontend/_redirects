@@ -1,0 +1,11 @@
+# Cloudflare Pages Clean Route Rewrites (HTTP 200)
+
+/dashboard          /dashboard.html          200
+/login              /login.html              200
+/integrations       /integrations.html       200
+/session/:id        /session.html            200
+/session            /session.html            200
+/session/*          /session.html            200
+
+# Root fallback
+/index              /index.html              200

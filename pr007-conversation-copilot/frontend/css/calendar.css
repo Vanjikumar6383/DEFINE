@@ -1,0 +1,709 @@
+/* ===================================================================
+   Nimad Google Calendar Meeting Intelligence & Mini Calendar Styles
+   High-contrast luxury black and silver-white palette with glowing neon accents
+   =================================================================== */
+
+.calendar-workspace-card {
+  background: rgba(12, 12, 15, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(24px);
+  margin-bottom: 40px;
+}
+
+/* ── Google Calendar Header & Sync Bar ── */
+.gcal-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gcal-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.gcal-title-info h2 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gcal-title-info p {
+  font-size: 0.84rem;
+  color: #a1a1aa;
+  margin-top: 2px;
+}
+
+.gcal-sync-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.gcal-sync-pill .pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px #34d399;
+  animation: pulseEmerald 2s infinite ease-in-out;
+}
+
+@keyframes pulseEmerald {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+/* ── Upcoming Meeting Notification Banner ── */
+.upcoming-alert-banner {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(18, 18, 22, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
+}
+
+.upcoming-alert-banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #34d399;
+  box-shadow: 0 0 12px #34d399;
+}
+
+.upcoming-alert-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.upcoming-alert-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.alert-tag {
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #34d399;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.alert-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-top: 2px;
+}
+
+.alert-time {
+  font-size: 0.8rem;
+  color: #d4d4d8;
+  margin-top: 2px;
+}
+
+.upcoming-alert-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── Calendar Interactive Workspace Layout ── */
+.calendar-workspace-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 460px) 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .calendar-workspace-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Simple Small Calendar Widget Box ── */
+.mini-calendar-card {
+  background: rgba(18, 18, 24, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+}
+
+.mini-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.mini-cal-month-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+  font-family: var(--font-main);
+  letter-spacing: -0.01em;
+}
+
+.mini-cal-nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mini-cal-nav-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.mini-cal-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.mini-cal-today-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.74rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mini-cal-today-btn:hover {
+  background: #ffffff;
+  color: #000000;
+}
+
+/* ── Weekday Headers ── */
+.mini-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.mini-cal-weekday {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #71717a;
+  text-transform: uppercase;
+  padding: 4px 0;
+}
+
+/* ── Mini Calendar Days Grid ── */
+.mini-cal-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+/* Base Day Tile */
+.mini-day-cell {
+  aspect-ratio: 1;
+  min-height: 42px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 2px;
+  user-select: none;
+}
+
+.mini-day-cell:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.mini-day-cell.other-month {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.mini-day-cell.other-month:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.07);
+  transform: none;
+}
+
+.mini-day-number {
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #d4d4d8;
+  line-height: 1;
+}
+
+/* ── SHADING LOGIC (USER SPECIFICATION) ── */
+
+/* 1. OCCURRED / ATTENDED MEETINGS (Shaded Obsidian & Silver) */
+.mini-day-cell.shaded-attended {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, rgba(140, 140, 160, 0.1) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1), 0 0 8px rgba(255, 255, 255, 0.06);
+}
+
+.mini-day-cell.shaded-attended .mini-day-number {
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.mini-day-cell.shaded-attended:hover {
+  background: rgba(255, 255, 255, 0.24);
+  border-color: #ffffff;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.25);
+}
+
+/* 2. FUTURE / UPCOMING MEETINGS (Shaded in a DIFFERENT radiant neon color) */
+.mini-day-cell.shaded-upcoming {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.24) 0%, rgba(6, 182, 212, 0.15) 100%);
+  border: 1px solid rgba(52, 211, 153, 0.75);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.35), inset 0 0 8px rgba(16, 185, 129, 0.15);
+}
+
+.mini-day-cell.shaded-upcoming .mini-day-number {
+  color: #6ee7b7;
+  font-weight: 800;
+}
+
+.mini-day-cell.shaded-upcoming:hover {
+  background: rgba(16, 185, 129, 0.35);
+  border-color: #a7f3d0;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.55);
+}
+
+/* 3. BOTH OCCURRED & UPCOMING ON SAME DATE */
+.mini-day-cell.shaded-both {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(16, 185, 129, 0.24) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.15);
+}
+
+.mini-day-cell.shaded-both .mini-day-number {
+  color: #ffffff;
+  font-weight: 800;
+}
+
+/* 4. TODAY ACTIVE RING */
+.mini-day-cell.is-today {
+  box-shadow: 0 0 0 2px #ffffff !important;
+  font-weight: 900;
+}
+
+.mini-day-cell.is-selected {
+  outline: 2px solid #38bdf8;
+  outline-offset: 1px;
+}
+
+/* Status Indicator Dots under Date Number */
+.day-indicators-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  margin-top: 3px;
+  height: 5px;
+}
+
+.cal-dot-attended {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 6px #ffffff;
+}
+
+.cal-dot-upcoming {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px #34d399;
+  animation: pulseDotSmall 1.8s infinite ease-in-out;
+}
+
+@keyframes pulseDotSmall {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.7); opacity: 0.5; }
+}
+
+/* ── Calendar Shading Legend ── */
+.mini-cal-legend {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.74rem;
+  color: #a1a1aa;
+}
+
+.legend-swatch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.swatch-box {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.swatch-attended {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.15);
+}
+
+.swatch-upcoming {
+  background: rgba(16, 185, 129, 0.25);
+  border: 1px solid rgba(52, 211, 153, 0.75);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.35);
+}
+
+/* ── Selected Day Preview / Intelligent Details Pane ── */
+.calendar-day-summary-panel {
+  background: rgba(16, 16, 22, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  padding: 20px;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.day-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.day-panel-date-info h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.day-panel-date-info p {
+  font-size: 0.8rem;
+  color: #a1a1aa;
+}
+
+.day-panel-meetings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.meeting-summary-card {
+  background: rgba(24, 24, 32, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.meeting-summary-card:hover {
+  background: rgba(30, 30, 40, 0.95);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.meeting-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.meeting-card-time {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.meeting-card-title {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.35;
+}
+
+.meeting-card-details {
+  font-size: 0.8rem;
+  color: #a1a1aa;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.meeting-card-highlights {
+  font-size: 0.8rem;
+  color: #e4e4e7;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border-left: 3px solid #ffffff;
+  line-height: 1.45;
+}
+
+/* ── Meeting Intelligence Modal ── */
+.meeting-modal-container {
+  max-width: 860px;
+  width: 95vw;
+}
+
+.meeting-modal-header {
+  padding: 20px 24px;
+  background: rgba(18, 18, 22, 0.96);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.meeting-modal-title-area h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+.meeting-modal-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: #a1a1aa;
+}
+
+.meeting-modal-tabs {
+  display: flex;
+  background: rgba(14, 14, 18, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 24px;
+  gap: 16px;
+  overflow-x: auto;
+}
+
+.meeting-tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #a1a1aa;
+  padding: 14px 4px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.meeting-tab-btn.active {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+}
+
+.meeting-modal-body {
+  padding: 24px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* Q&A Cards */
+.qa-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.qa-item-card {
+  background: rgba(18, 18, 24, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.qa-speaker-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.qa-speaker-name {
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qa-question-text {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 12px;
+  line-height: 1.45;
+}
+
+.qa-answer-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid #ffffff;
+  padding: 12px 14px;
+  border-radius: 6px;
+}
+
+.qa-answer-label {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qa-answer-text {
+  font-size: 0.9rem;
+  color: #e4e4e7;
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+
+.qa-points-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: #d4d4d8;
+}
+
+.qa-points-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+/* Transcripts inside Modal */
+.modal-transcript-bubble {
+  background: rgba(20, 20, 26, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+}
+
+.modal-speaker-name {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-speaker-text {
+  font-size: 0.9rem;
+  color: #e4e4e7;
+  line-height: 1.5;
+}

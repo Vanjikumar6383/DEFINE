@@ -1,0 +1,18 @@
+# Cloudflare Tunnel Configuration (cloudflared)
+# Use this when binding a custom domain or named tunnel to Nimad Copilot.
+
+# tunnel: <YOUR_TUNNEL_UUID_HERE>
+# credentials-file: /etc/cloudflared/<YOUR_TUNNEL_UUID>.json
+
+ingress:
+  # Map your domain or subdomain to the local FastAPI + WebRTC server
+  - hostname: copilot.yourdomain.com
+    service: http://127.0.0.1:8000
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      # Required for real-time WebSocket streaming
+      tcpKeepAlive: 30s
+
+  # Catch-all rule (Required by cloudflared)
+  - service: http_status:404

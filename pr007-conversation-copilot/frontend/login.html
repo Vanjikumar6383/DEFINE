@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nimad — Sign In to AI Conversation Copilot</title>
+  <meta name="description" content="Sign in to your Nimad Copilot workspace. Real-time meeting intelligence, decision ledgers, and live transcription." />
+  <link rel="stylesheet" href="/static/base.css" />
+  <script src="/config.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --clr-bg: #000000;
+      --clr-surface: #0c0c10;
+      --clr-silver-white: #ffffff;
+      --clr-silver-subtle: rgba(255, 255, 255, 0.14);
+      --clr-silver-glow: rgba(255, 255, 255, 0.25);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      color: #ffffff;
+      background: #000000;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       VIDEO BACKGROUND SYSTEM
+    ══════════════════════════════════════════════════════ */
+    .video-background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      overflow: hidden;
+      background: #000000;
+      pointer-events: none;
+    }
+
+    #bg-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.7) contrast(1.15) saturate(1.1);
+      transform: scale(1.0);
+    }
+
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at 50% 45%,
+        rgba(0, 0, 0, 0.25) 0%,
+        rgba(0, 0, 0, 0.75) 60%,
+        rgba(0, 0, 0, 0.96) 100%
+      );
+      backdrop-filter: blur(1px);
+    }
+
+    .video-grid-pattern {
+      display: none;
+    }
+
+    /* Back Link */
+    .back-nav {
+      position: fixed;
+      top: 24px;
+      left: 28px;
+      z-index: 20;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      background: rgba(12, 12, 16, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #e4e4e7;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      color: #ffffff;
+      background: rgba(24, 24, 30, 0.95);
+      border-color: rgba(255, 255, 255, 0.45);
+      transform: translateX(-2px);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+    }
+
+    /* Login Card */
+    .login-wrapper {
+      width: 100%;
+      max-width: 440px;
+      margin: auto;
+      z-index: 10;
+      position: relative;
+    }
+
+    .brand-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 18px;
+      border-radius: 9999px;
+      background: rgba(12, 12, 16, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.95);
+      margin-bottom: 14px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+    }
+
+    .brand-title {
+      font-size: 1.55rem;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+    }
+
+    .auth-card {
+      background: rgba(12, 12, 16, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 20px;
+      backdrop-filter: blur(28px);
+      padding: 32px 28px;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.95), 0 0 35px rgba(255, 255, 255, 0.06);
+    }
+
+    .auth-tab-bar {
+      display: flex;
+      background: rgba(20, 20, 26, 0.85);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .auth-tab-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .auth-tab-btn.active {
+      background: #ffffff;
+      color: #000000;
+      font-weight: 800;
+      box-shadow: 0 2px 12px rgba(255, 255, 255, 0.3);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(20, 20, 26, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+      background: rgba(24, 24, 30, 0.95);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 13px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      color: #000000;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 0 24px rgba(255, 255, 255, 0.25), 0 4px 16px rgba(0, 0, 0, 0.7);
+      margin-top: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-1px);
+      background: #f4f4f5;
+      box-shadow: 0 0 32px rgba(255, 255, 255, 0.45);
+      border-color: #ffffff;
+    }
+
+    .btn-demo-fast {
+      width: 100%;
+      padding: 11px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-demo-fast:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.45);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-cta-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: rgba(18, 18, 22, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-cta-secondary:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+    }
+    .btn-cta-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      color: #000000;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-cta-primary:hover {
+      background: #f4f4f5;
+      color: #000000;
+    }
+
+    .auth-error {
+      color: #f87171;
+      font-size: 0.84rem;
+      text-align: center;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.78rem;
+      color: #a1a1aa;
+    }
+
+    .auth-footer a {
+      color: #ffffff;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .auth-footer a:hover {
+      color: #e4e4e7;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fullscreen Video Background -->
+  <div class="video-background-container">
+    <video autoplay muted loop playsinline preload="auto" id="bg-video" style="display:block">
+      <source src="/assets/gemeni_imported_video_96cdd6a6.mp4" type="video/mp4">
+      <source src="/assets/gemini_generated_video_96cdd6a6.mp4" type="video/mp4">
+      <source src="/assets/background.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+    <div class="video-grid-pattern"></div>
+  </div>
+  <script>
+    (function() {
+      var v = document.getElementById('bg-video');
+      if (!v) return;
+      v.muted = true;
+      v.defaultMuted = true;
+      v.setAttribute('playsinline', '');
+      var p = v.play();
+      if (p !== undefined) {
+        p.catch(function() {
+          var unlock = function() {
+            v.play().catch(function(){});
+            document.removeEventListener('click', unlock);
+            document.removeEventListener('touchstart', unlock);
+          };
+          document.addEventListener('click', unlock);
+          document.addEventListener('touchstart', unlock);
+        });
+      }
+    })();
+  </script>
+
+  <!-- Back to Landing Page -->
+  <div class="back-nav">
+    <a href="/" class="back-btn">
+      <span>←</span>
+      <span>Back to Landing Page</span>
+    </a>
+  </div>
+
+  <!-- Sign In Container -->
+  <div class="login-wrapper">
+    <div class="brand-header">
+      <a href="/" style="display:inline-block;text-decoration:none;margin-bottom:14px">
+        <img src="/assets/nimad-logo-white.png" alt="Nimad" style="height:64px;max-width:220px;object-fit:contain;display:block;margin:0 auto">
+      </a>
+      <div>
+        <div class="hero-badge"><span>◆ AI-POWERED IN-APP & EXTERNAL MEETING COPILOT</span></div>
+      </div>
+      <h1 class="brand-title" style="font-size:1.55rem;font-weight:900;letter-spacing:-0.02em">Sign In to Nimad</h1>
+      <p style="font-size:0.88rem;color:#94a3b8;margin-top:6px">Access your meeting workspace, transcripts, and insights</p>
+    </div>
+
+    <div class="auth-card">
+      <!-- Action Tabs Bar (Buttons Only by default) -->
+      <div class="auth-tab-bar" style="margin-bottom:20px">
+        <button id="tab-join" class="auth-tab-btn" onclick="toggleAuthTab('join')">Join Meeting</button>
+        <button id="tab-create" class="auth-tab-btn" onclick="toggleAuthTab('create')">Create Room</button>
+        <button id="tab-login" class="auth-tab-btn" onclick="toggleAuthTab('login')">Sign In</button>
+        <button id="tab-register" class="auth-tab-btn" onclick="toggleAuthTab('register')">Create Account</button>
+      </div>
+
+      <!-- Default "Buttons Only" State (Shown initially) -->
+      <div id="auth-buttons-only-state" style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <button type="button" class="btn-cta-secondary" onclick="toggleAuthTab('join')" style="justify-content:center;padding:14px;border-radius:10px;font-size:0.92rem;font-weight:700">
+            <span>🔗 Join Room</span>
+          </button>
+          <button type="button" class="btn-cta-primary" onclick="toggleAuthTab('create')" style="justify-content:center;padding:14px;border-radius:10px;font-size:0.92rem;font-weight:800">
+            <span>✨ Create Room</span>
+          </button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <button type="button" class="btn-cta-secondary" onclick="toggleAuthTab('login')" style="justify-content:center;padding:12px;border-radius:10px;font-size:0.86rem">
+            <span>Sign In</span>
+          </button>
+          <button type="button" class="btn-cta-secondary" onclick="toggleAuthTab('register')" style="justify-content:center;padding:12px;border-radius:10px;font-size:0.86rem">
+            <span>Create Account</span>
+          </button>
+        </div>
+        <button type="button" class="btn-demo-fast" onclick="fillDemoCredentials()" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:4px">
+          <span class="neon-pad neon-pad-xs neon-pad-amber"><svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></span>
+          <span>1-Click Instant Demo Login</span>
+        </button>
+      </div>
+
+      <!-- 1. Join Room Form (Only Room ID Entering Box - Hidden by default) -->
+      <form id="join-meeting-form" style="display:none" onsubmit="handleJoinMeeting(event)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:10px">
+          <div style="font-size:0.9rem;font-weight:700;color:#ffffff;display:flex;align-items:center;gap:8px">
+            <span>🔗</span> Enter Meeting Link or Room Code
+          </div>
+          <button type="button" onclick="closeAuthTabs()" style="background:none;border:none;color:#94a3b8;font-size:1.15rem;cursor:pointer;padding:2px 6px" title="Back to buttons only">✕ Close</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="join-meeting-input">Meeting Link or Room Code <span style="color:#ef4444">*</span></label>
+          <input id="join-meeting-input" class="form-input" type="text" placeholder="e.g. http://localhost:8000/session/... or 8-char code" required autofocus />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="join-name-input">Your Display Name</label>
+          <input id="join-name-input" class="form-input" type="text" placeholder="e.g. Elena Rostova / Guest Participant" />
+        </div>
+        <div style="display:flex;gap:10px">
+          <button id="btn-submit-join" class="btn-submit" type="submit" style="flex:1">Enter Meeting Room →</button>
+          <button type="button" onclick="closeAuthTabs()" style="background:rgba(255,255,255,0.08);color:#cbd5e1;font-weight:600;font-size:0.85rem;padding:11px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);cursor:pointer">Cancel</button>
+        </div>
+        <p id="join-error-msg" class="auth-error"></p>
+      </form>
+
+      <!-- 2. Create Room Form (Only Room Creating Box - Hidden by default) -->
+      <form id="create-meeting-form" style="display:none" onsubmit="handleCreateMeeting(event)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:10px">
+          <div style="font-size:0.9rem;font-weight:700;color:#ffffff;display:flex;align-items:center;gap:8px">
+            <span>✨</span> Create Live Meeting Room
+          </div>
+          <button type="button" onclick="closeAuthTabs()" style="background:none;border:none;color:#94a3b8;font-size:1.15rem;cursor:pointer;padding:2px 6px" title="Back to buttons only">✕ Close</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="card-create-title-input">Meeting Title <span style="color:#ef4444">*</span></label>
+          <input id="card-create-title-input" class="form-input" type="text" placeholder="e.g. Architecture Review &amp; Strategic Alignment" value="Live Video Sync &amp; Discussion" oninput="updateLoginMeetingScore()" required autofocus />
+          <!-- Real-time Monthly Completed Meetings Score -->
+          <div id="login-create-score-panel" style="margin-top:8px;padding:8px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.18);border-radius:8px;display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:0.68rem;font-weight:800;letter-spacing:0.04em;color:#cbd5e1">MONTHLY COMPLETED MEETINGS SCORE</div>
+              <div id="login-create-score-desc" style="font-size:0.72rem;color:#94a3b8;margin-top:2px">0 done this month with matching name &amp; motive</div>
+            </div>
+            <div id="login-create-score-num" style="font-family:var(--font-mono);font-size:1.15rem;font-weight:900;color:#ffffff;background:#090a0d;border:1px solid rgba(255,255,255,0.35);padding:3px 10px;border-radius:6px">0</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="card-create-obj-input">Primary Goal / Objective (Optional)</label>
+          <input id="card-create-obj-input" class="form-input" type="text" placeholder="e.g. Review deliverables, SLA terms, and key action items" oninput="updateLoginMeetingScore()" />
+        </div>
+        <div style="display:flex;gap:10px">
+          <button id="btn-submit-card-create" class="btn-submit" type="submit" style="flex:1">+ Generate Link &amp; Start Meeting →</button>
+          <button type="button" onclick="closeAuthTabs()" style="background:rgba(255,255,255,0.08);color:#cbd5e1;font-weight:600;font-size:0.85rem;padding:11px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);cursor:pointer">Cancel</button>
+        </div>
+        <p id="card-create-error-msg" class="auth-error"></p>
+      </form>
+
+      <!-- 3. Login Form (Hidden by default) -->
+      <form id="login-form" style="display:none" onsubmit="handleLogin(event)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:10px">
+          <div style="font-size:0.9rem;font-weight:700;color:#ffffff">Sign In to Workspace</div>
+          <button type="button" onclick="closeAuthTabs()" style="background:none;border:none;color:#94a3b8;font-size:1.15rem;cursor:pointer;padding:2px 6px" title="Back to buttons only">✕ Close</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email Address</label>
+          <input id="login-email" class="form-input" type="email" placeholder="demo@copilot.ai" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <input id="login-password" class="form-input" type="password" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <div style="display:flex;gap:10px">
+          <button id="btn-login-submit" class="btn-submit" type="submit" style="flex:1">Sign In to Workspace →</button>
+          <button type="button" onclick="closeAuthTabs()" style="background:rgba(255,255,255,0.08);color:#cbd5e1;font-weight:600;font-size:0.85rem;padding:11px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);cursor:pointer">Cancel</button>
+        </div>
+        <button type="button" class="btn-demo-fast" onclick="fillDemoCredentials()" style="display:inline-flex;align-items:center;justify-content:center;gap:8px">
+          <span class="neon-pad neon-pad-xs neon-pad-amber"><svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></span>
+          <span>1-Click Instant Demo Login</span>
+        </button>
+        <p id="login-error-msg" class="auth-error"></p>
+      </form>
+
+      <!-- 4. Register Form (Hidden by default) -->
+      <form id="register-form" style="display:none" onsubmit="handleRegister(event)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:10px">
+          <div style="font-size:0.9rem;font-weight:700;color:#ffffff">Create Account</div>
+          <button type="button" onclick="closeAuthTabs()" style="background:none;border:none;color:#94a3b8;font-size:1.15rem;cursor:pointer;padding:2px 6px" title="Back to buttons only">✕ Close</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-name">Display Name</label>
+          <input id="reg-name" class="form-input" type="text" placeholder="Sarah Chen" required autocomplete="name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-email">Email Address</label>
+          <input id="reg-email" class="form-input" type="email" placeholder="sarah@example.com" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-password">Password (min 8 characters)</label>
+          <input id="reg-password" class="form-input" type="password" placeholder="••••••••" required minlength="8" autocomplete="new-password" />
+        </div>
+        <div style="display:flex;gap:10px">
+          <button id="btn-reg-submit" class="btn-submit" type="submit" style="flex:1">Create Free Account →</button>
+          <button type="button" onclick="closeAuthTabs()" style="background:rgba(255,255,255,0.08);color:#cbd5e1;font-weight:600;font-size:0.85rem;padding:11px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);cursor:pointer">Cancel</button>
+        </div>
+        <p id="reg-error-msg" class="auth-error"></p>
+      </form>
+
+      <div class="auth-footer">
+        Protected by privacy-by-design. <a href="/">Explore Nimad Features</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { api } from '/js/api.js';
+
+    // If already logged in, redirect straight to dashboard
+    if (localStorage.getItem('copilot_token')) {
+      window.location.href = '/dashboard';
+    }
+
+    let currentAuthTab = null;
+
+    window.closeAuthTabs = () => {
+      currentAuthTab = null;
+      ['join-meeting-form', 'create-meeting-form', 'login-form', 'register-form'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+      const buttonsState = document.getElementById('auth-buttons-only-state');
+      if (buttonsState) buttonsState.style.display = 'flex';
+
+      ['tab-join', 'tab-create', 'tab-login', 'tab-register'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active');
+      });
+    };
+
+    window.toggleAuthTab = (mode) => {
+      if (currentAuthTab === mode) {
+        window.closeAuthTabs();
+        return;
+      }
+
+      currentAuthTab = mode;
+      const buttonsState = document.getElementById('auth-buttons-only-state');
+      if (buttonsState) buttonsState.style.display = 'none';
+
+      const forms = {
+        join: 'join-meeting-form',
+        create: 'create-meeting-form',
+        login: 'login-form',
+        register: 'register-form'
+      };
+
+      Object.entries(forms).forEach(([key, formId]) => {
+        const el = document.getElementById(formId);
+        if (el) el.style.display = (key === mode) ? 'block' : 'none';
+      });
+
+      const tabs = {
+        join: 'tab-join',
+        create: 'tab-create',
+        login: 'tab-login',
+        register: 'tab-register'
+      };
+
+      Object.entries(tabs).forEach(([key, tabId]) => {
+        const el = document.getElementById(tabId);
+        if (el) el.classList.toggle('active', key === mode);
+      });
+
+      if (mode === 'join') {
+        document.getElementById('join-meeting-input')?.focus();
+      } else if (mode === 'create') {
+        document.getElementById('card-create-title-input')?.focus();
+      } else if (mode === 'login') {
+        document.getElementById('login-email')?.focus();
+      } else if (mode === 'register') {
+        document.getElementById('reg-name')?.focus();
+      }
+    };
+
+    let cachedLoginSessions = null;
+    async function fetchLoginSessions() {
+      if (cachedLoginSessions) return cachedLoginSessions;
+      try {
+        const list = await api.sessions.list();
+        if (Array.isArray(list)) {
+          cachedLoginSessions = list;
+          return list;
+        }
+      } catch (_) {}
+      return [];
+    }
+
+    window.updateLoginMeetingScore = async () => {
+      const title = (document.getElementById('card-create-title-input')?.value || '').trim().toLowerCase();
+      const motive = (document.getElementById('card-create-obj-input')?.value || '').trim().toLowerCase();
+      const scoreNum = document.getElementById('login-create-score-num');
+      const scoreDesc = document.getElementById('login-create-score-desc');
+      if (!scoreNum || !scoreDesc) return;
+
+      const now = new Date();
+      const curYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const monthLabel = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+
+      if (!title) {
+        scoreNum.textContent = '0';
+        scoreDesc.textContent = `Type a meeting title to compute completed sessions in ${monthLabel}.`;
+        return;
+      }
+
+      const list = await fetchLoginSessions();
+      const doneStatuses = new Set(['attended', 'ended', 'completed', 'done']);
+      const matches = (list || []).filter(s => {
+        const st = (s.status || '').toLowerCase();
+        if (!doneStatuses.has(st)) return false;
+        const sDate = (s.created_at || '').substring(0, 7);
+        if (sDate && sDate !== curYearMonth) return false;
+        const sTitle = (s.title || '').trim().toLowerCase();
+        const titleMatch = (sTitle === title) || (title.length >= 4 && sTitle.includes(title)) || (sTitle.length >= 4 && title.includes(sTitle));
+        if (!titleMatch) return false;
+        if (motive) {
+          const sObj = (s.objective || s.desired_outcome || '').trim().toLowerCase();
+          if (!sObj) return false;
+          const objMatch = (sObj === motive) || (motive.length >= 4 && sObj.includes(motive)) || (sObj.length >= 4 && motive.includes(sObj));
+          if (!objMatch) return false;
+        }
+        return true;
+      });
+
+      const count = matches.length;
+      scoreNum.textContent = String(count);
+      if (motive) {
+        scoreDesc.innerHTML = `<strong style="color:#ffffff">${count} completed</strong> in ${monthLabel} with matching title and motive.`;
+      } else {
+        scoreDesc.innerHTML = `<strong style="color:#ffffff">${count} completed</strong> in ${monthLabel} with this title. Enter motive to verify.`;
+      }
+    };
+
+    window.switchTab = (tab) => {
+      window.toggleAuthTab(tab);
+      if (tab === 'create') {
+        setTimeout(() => window.updateLoginMeetingScore(), 50);
+      }
+    };
+
+    window.handleJoinMeeting = async (e) => {
+      if (e) e.preventDefault();
+      const link = (document.getElementById('join-meeting-input')?.value || '').trim();
+      const name = (document.getElementById('join-name-input')?.value || '').trim() || 'Attendee';
+      const errEl = document.getElementById('join-error-msg');
+      const btn = document.getElementById('btn-submit-join');
+
+      if (!link) {
+        if (errEl) {
+          errEl.textContent = 'Please enter or paste a meeting link or room code';
+          errEl.style.display = 'block';
+        }
+        return;
+      }
+
+      if (errEl) errEl.style.display = 'none';
+      const origText = btn.textContent;
+      btn.textContent = 'Connecting to Meeting Room…';
+      btn.disabled = true;
+
+      try {
+        const res = await api.meetings.join(link, name);
+        if (res && res.access_token) {
+          localStorage.setItem('copilot_token', res.access_token);
+          localStorage.setItem('copilot_user', JSON.stringify({
+            displayName: res.display_name,
+            role: res.role,
+            sessionId: res.session_id
+          }));
+        }
+        window.location.href = res.meeting_url || `/session/${res.session_id}`;
+      } catch (err) {
+        if (errEl) {
+          errEl.textContent = 'Could not join meeting: ' + err.message;
+          errEl.style.display = 'block';
+        }
+        btn.textContent = origText;
+        btn.disabled = false;
+      }
+    };
+
+    window.handleCreateMeeting = async (e) => {
+      if (e) e.preventDefault();
+      const titleInput = document.getElementById('card-create-title-input');
+      const objInput = document.getElementById('card-create-obj-input');
+      const title = (titleInput?.value || '').trim() || 'Live Meeting Room';
+      const objective = (objInput?.value || '').trim();
+      const errEl = document.getElementById('card-create-error-msg');
+      const btn = document.getElementById('btn-submit-card-create');
+
+      if (errEl) errEl.style.display = 'none';
+      const origText = btn.textContent;
+      btn.textContent = 'Generating meeting link…';
+      btn.disabled = true;
+
+      try {
+        const res = await api.meetings.create(title, objective, 'Host');
+        if (res && res.access_token) {
+          localStorage.setItem('copilot_token', res.access_token);
+          localStorage.setItem('copilot_user', JSON.stringify({
+            displayName: res.display_name,
+            role: res.role,
+            sessionId: res.session_id
+          }));
+        }
+        const fullUrl = window.location.origin + (res.meeting_url || `/session/${res.session_id}`);
+        showMeetingCreatedModal(res.session_id, fullUrl, res.meeting_code);
+      } catch (err) {
+        if (errEl) {
+          errEl.textContent = 'Could not create meeting: ' + err.message;
+          errEl.style.display = 'block';
+        }
+      } finally {
+        btn.textContent = origText;
+        btn.disabled = false;
+      }
+    };
+
+    function showMeetingCreatedModal(sessionId, fullUrl, roomCode) {
+      document.querySelector('.created-modal-overlay')?.remove();
+      const overlay = document.createElement('div');
+      overlay.className = 'created-modal-overlay';
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+      overlay.innerHTML = `
+        <div style="background:#0e0f14;border:1px solid rgba(255,255,255,0.2);border-radius:18px;max-width:540px;width:100%;padding:28px;box-shadow:0 24px 60px rgba(0,0,0,0.95);position:relative">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <h3 style="font-size:1.35rem;font-weight:800;color:#ffffff;margin:0">🎉 Meeting Link Created!</h3>
+            <button onclick="this.closest('.created-modal-overlay').remove()" style="background:none;border:none;color:#94a3b8;font-size:1.3rem;cursor:pointer">✕</button>
+          </div>
+          <p style="font-size:0.88rem;color:#cbd5e1;line-height:1.5;margin-bottom:18px">
+            Your live meeting room is live. Copy and send this invite link to the other participant to join your call:
+          </p>
+          <div style="background:#16171f;padding:14px;border:1px solid rgba(255,255,255,0.14);border-radius:10px;margin-bottom:14px">
+            <div style="font-size:0.75rem;font-weight:700;color:#94a3b8;margin-bottom:6px">SHAREABLE MEETING LINK</div>
+            <div style="display:flex;gap:8px">
+              <input type="text" readonly value="${fullUrl}" style="font-size:0.85rem;padding:9px 12px;background:#090a0d;border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:#ffffff;flex:1" />
+              <button onclick="copyCreatedLink('${fullUrl}', this)" style="background:#ffffff;color:#000000;font-weight:800;padding:8px 16px;border-radius:6px;border:none;cursor:pointer;white-space:nowrap">
+                Copy Link
+              </button>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#16171f;border-radius:8px;border:1px solid rgba(255,255,255,0.1);margin-bottom:20px">
+            <span style="font-size:0.82rem;color:#94a3b8">ROOM CODE:</span>
+            <strong style="font-family:var(--font-mono);font-size:1.1rem;color:#ffffff;letter-spacing:0.08em">${roomCode}</strong>
+          </div>
+          <button onclick="window.location.href='/session/${sessionId}'" style="width:100%;background:#ffffff;color:#000000;font-weight:800;font-size:0.95rem;padding:12px;border-radius:10px;border:none;cursor:pointer">
+            Enter Meeting Room Now →
+          </button>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+    }
+
+    window.copyCreatedLink = (url, btn) => {
+      navigator.clipboard.writeText(url).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.style.background = '#10b981';
+        btn.style.color = '#ffffff';
+        setTimeout(() => {
+          btn.textContent = orig;
+          btn.style.background = '#ffffff';
+          btn.style.color = '#000000';
+        }, 2500);
+      });
+    };
+
+    window.fillDemoCredentials = async () => {
+      document.getElementById('login-email').value = 'demo@copilot.ai';
+      document.getElementById('login-password').value = 'demopassword123';
+      window.toggleAuthTab('login');
+      const errEl = document.getElementById('login-error-msg');
+      if (errEl) errEl.style.display = 'none';
+
+      const btn = document.getElementById('btn-login-submit');
+      const origText = btn.textContent;
+      btn.textContent = 'Signing in as Demo User…';
+      btn.disabled = true;
+      try {
+        let token = null;
+        try {
+          const res = await api.auth.login('demo@copilot.ai', 'demopassword123');
+          token = res.access_token;
+        } catch {
+          await api.auth.register('demo@copilot.ai', 'Demo Host', 'demopassword123');
+          const res = await api.auth.login('demo@copilot.ai', 'demopassword123');
+          token = res.access_token;
+        }
+        if (token) {
+          localStorage.setItem('copilot_token', token);
+          window.location.href = '/dashboard';
+        }
+      } catch (err) {
+        if (errEl) {
+          errEl.textContent = 'Login error: ' + (err.message || 'Unable to connect to server');
+          errEl.style.display = 'block';
+        }
+        btn.textContent = origText;
+        btn.disabled = false;
+      }
+    };
+
+    window.handleLogin = async (e) => {
+      if (e) e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-password').value;
+      const btn = document.getElementById('btn-login-submit');
+      const errEl = document.getElementById('login-error-msg');
+      if (errEl) errEl.style.display = 'none';
+      const origText = btn.textContent;
+      btn.textContent = 'Signing in…';
+      btn.disabled = true;
+
+      try {
+        const { access_token } = await api.auth.login(email, pass);
+        localStorage.setItem('copilot_token', access_token);
+        window.location.href = '/dashboard';
+      } catch (err) {
+        if (errEl) {
+          errEl.textContent = err.message || 'Invalid email or password';
+          errEl.style.display = 'block';
+        }
+        btn.textContent = origText;
+        btn.disabled = false;
+      }
+    };
+
+    window.handleRegister = async (e) => {
+      if (e) e.preventDefault();
+      const name = document.getElementById('reg-name').value;
+      const email = document.getElementById('reg-email').value;
+      const pass = document.getElementById('reg-password').value;
+      const btn = document.getElementById('btn-reg-submit');
+      const errEl = document.getElementById('reg-error-msg');
+      if (errEl) errEl.style.display = 'none';
+      const origText = btn.textContent;
+      btn.textContent = 'Creating account…';
+      btn.disabled = true;
+
+      try {
+        await api.auth.register(email, name, pass);
+        const { access_token } = await api.auth.login(email, pass);
+        localStorage.setItem('copilot_token', access_token);
+        window.location.href = '/dashboard';
+      } catch (err) {
+        if (errEl) {
+          errEl.textContent = err.message || 'Registration failed';
+          errEl.style.display = 'block';
+        }
+        btn.textContent = origText;
+        btn.disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>
